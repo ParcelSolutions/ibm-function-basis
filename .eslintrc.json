@@ -1,0 +1,34 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "node": true,
+    "meteor": true,
+    "es6": true,
+    "mocha": true
+
+  },
+  "extends": [
+    "airbnb-base",
+    "prettier",
+    "prettier/react",
+    "plugin:mocha/recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019
+  },
+  "rules": {
+    "prettier/prettier": "warn",
+    "no-restricted-globals": ["error", "event", "fdescribe"],
+    "no-console": "off",
+    "no-shadow": [2, {
+      "allow": ["error", "err", "result", "obj"]
+    }]
+  },
+  "plugins": ["prettier", "mocha"]
+
+}
