@@ -5,14 +5,17 @@ if (process.env.NODE_ENV !== "development") {
 const debug = require("debug")("index");
 require("dotenv").config(dontEnvFile);
 const { to } = require("await-to-js");
+const { CityNameResults } = require("./functions/search");
 
 async function main(params) {
   let error;
   let result;
-
-  switch (params.type.toLowerCase()) {
-    case "": {
-      return result;
+  const type = (params.type || "").toLowerCase();
+  switch (type) {
+    case "":
+    case "search": {
+      if (params.search) return CityNameResults(params.search);
+      return [];
     }
 
     default:
