@@ -19,7 +19,7 @@ async function main(params) {
       return {
         error: {
           code: `unknown type used : ${params.type}`,
-          message: params.toString()
+          message: params
         }
       };
   }
