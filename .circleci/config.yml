@@ -1,0 +1,82 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:stretch
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/function/
+
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "34:f8:0b:f4:65:c3:04:95:bd:28:0d:5f:38:46:0d:a0"
+
+      - run:
+          name: "install cloud foundry"
+          command: |
+            curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
+            sudo dpkg -i cf-cli_amd64.deb
+            cf -v
+            cf api https://api.eu-de.bluemix.net
+            cf auth $BLUEMIX_USER $BLUEMIX_PASSWORD
+            cf target -o $BLUEMIX_ORG -s $BLUEMIX_SPACE
+            cf a
+            cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org
+            cf install-plugin blue-green-deploy -r CF-Community -f
+      - run:
+          name: "install ibmcloud"
+          command: |
+            curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+            ibmcloud plugin install cloud-functions -f
+            ibmcloud -v
+            #ibmcloud api https://cloud.ibm.com  
+            ibmcloud login --apikey $BLUEMIX_IAM  --no-region
+            printenv
+            #--cf-api api.eu-de.cf.cloud.ibm.com -r $BLUEMIX_REGION
+            ibmcloud target --cf-api api.eu-de.cf.cloud.ibm.com -o $BLUEMIX_ORG -s $BLUEMIX_SPACE
+
+            ibmcloud target -r eu-de
+
+      - run:
+          name: "Pull Submodules"
+          command: |
+            git submodule init
+            git submodule update --remote
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: "set settings file deploy production"
+          command: |
+            printenv PRODUCTION_ENV > ~/function/.env.prodSettings.json
+      - run:
+          name: "setup node and all packages"
+          command: |
+            npm run setup
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm run test
+
+      - deploy:
+          name: "Deploy code to ibm"
+          command: |
+            npm run deploy
