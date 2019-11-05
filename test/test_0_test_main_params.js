@@ -9,7 +9,7 @@ describe("main-schema", function() {
   it("test existing post code wrong request key", async function() {
     // test existing post code
     const result = await main({
-      type: "non-existing-type"
+      type: "test-on-a-non-existing-type"
     });
     debug("result wrong request result : %j", result);
     // assert.isArray(result.costs, 'costs is not an array');

@@ -1,9 +1,5 @@
-let dontEnvFile = {};
-if (process.env.NODE_ENV !== "development") {
-  dontEnvFile = { path: "./prodSettings" };
-}
 const debug = require("debug")("index");
-require("dotenv").config(dontEnvFile);
+require("dotenv-json")();
 const { to } = require("await-to-js");
 
 async function main(params) {
