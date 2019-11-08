@@ -1,14 +1,15 @@
 const path = require("path");
 const webpack = require("webpack");
 
-let settingsFile = { path: "./.env.json" };
+let envSettings = require("./.env.json");
+
+const envSettingsProduction = require("./.env.prodSettings.json");
+
 const isProduction = process.env.NODE_ENV === "production";
 
 if (isProduction) {
-  settingsFile = { path: "./.env.prodSettings.json" };
+  envSettings = envSettingsProduction;
 }
-
-const envSettings = require(settingsFile);
 
 const plugins = [
   new webpack.ContextReplacementPlugin(/.*/),
@@ -16,6 +17,7 @@ const plugins = [
   new webpack.IgnorePlugin(/^mongodb-client-encryption$/),
   new webpack.EnvironmentPlugin(envSettings)
 ];
+
 
 module.exports = {
   optimization: { minimize: isProduction },
