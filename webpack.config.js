@@ -1,14 +1,20 @@
 const path = require("path");
 const webpack = require("webpack");
-const productionEnv = require("./.env.prodSettings.json");
 
+let settingsFile = { path: "./.env.json" };
 const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction) {
+  settingsFile = { path: "./.env.prodSettings.json" };
+}
+
+const envSettings = require(settingsFile);
 
 const plugins = [
   new webpack.ContextReplacementPlugin(/.*/),
   new webpack.IgnorePlugin(/^pg-native$/),
   new webpack.IgnorePlugin(/^mongodb-client-encryption$/),
-  new webpack.EnvironmentPlugin(productionEnv)
+  new webpack.EnvironmentPlugin(envSettings)
 ];
 
 module.exports = {
