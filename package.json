@@ -1,7 +1,7 @@
 {
-  "name": "ibm-function-basis",
+  "name": "FUNCTIONNAME",
   "version": "1.0.0",
-  "description": "functions structure.",
+  "description": "FUNCTIONNAME",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ParcelSolutions/ibm-function-basis.git"
+    "url": "git+https://github.com/ParcelSolutions/FUNCTIONNAME.git"
   },
   "dependencies": {
     "ajv": "^6.10.2",
@@ -46,7 +46,7 @@
   "author": "Jan Carpentier",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ParcelSolutions/ibm-function-basis/issues"
+    "url": "https://github.com/ParcelSolutions/FUNCTIONNAME/issues"
   },
-  "homepage": "https://github.com/ParcelSolutions/ibm-function-basis#readme"
+  "homepage": "https://github.com/ParcelSolutions/iFUNCTIONNAME#readme"
 }
