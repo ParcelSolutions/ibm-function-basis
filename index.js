@@ -6,7 +6,7 @@ async function main(params) {
   let error;
   let result;
 
-  switch (params.type.toLowerCase()) {
+  switch ((params.type || "").toLowerCase()) {
     case "": {
       return result;
     }
