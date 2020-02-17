@@ -5,29 +5,69 @@ const mongodb = require("mongodb");
 const debug = require("debug")("mongo");
 const MeteorRandom = require("meteor-random");
 
-let mongoClient = null;
-let uniqueIds = [];
+let mongoClient = {};
+let uniqueIds = {};
 
-module.exports = class MongoConnection {
-  constructor() {
+function createdDT(userId) {
+  // debug("timestamp for %s", userId);
+  return {
+    by: userId,
+    at: new Date(),
+    atms: Date.now()
+  };
+}
+
+exports.MongoConnection = class MongoConnection {
+  constructor(uri) {
+    this.mongoClient = null;
+    this.uri = uri;
     this._initialized = this._initialize();
   }
 
   async _initialize() {
     // actual async constructor logic
-    if (mongoClient === null) {
-      mongoClient = await mongodb.MongoClient.connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      });
+
+    if (!mongoClient[this.uri]) {
+      debug("setup connection with ", this.uri);
+      try {
+        this.mongoClient = await mongodb.MongoClient.connect(this.uri, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          sslValidate: false
+        });
+        mongoClient[this.uri] = this.mongoClient;
+      } catch (e) {
+        debug("issue with db connnection", e);
+        throw e;
+      }
+      if (!this.mongoClient) {
+        throw Error("not able to connect to db!");
+      }
+    } else {
+      debug("connection exists !");
+      this.mongoClient = mongoClient[this.uri];
     }
-    this.mongoClient = mongoClient;
   }
 
-  db() {
-    return this.mongoClient.db();
+  async db() {
+    try {
+      const conn = await this.mongoClient;
+      if (!conn) throw Error("no db connection!");
+      return conn.db();
+    } catch (e) {
+      throw e;
+    }
   }
 
+  async close() {
+    if (this.mongoClient) {
+      console.log("mongoclient exists, lets close it!");
+      const conn = await this.mongoClient;
+      await conn.close();
+      this.mongoClient = null;
+    }
+    return true;
+  }
   async getIds(qty) {
     const ids = [];
     do {
@@ -38,12 +78,12 @@ module.exports = class MongoConnection {
   }
 
   async getId() {
-    debug("uniqueIds %o, get 1", uniqueIds.length);
+    // debug("uniqueIds %o, get 1", uniqueIds.length);
     try {
-      if (uniqueIds.length === 0) {
+      if (uniqueIds[this.uri].length === 0) {
         await this.buildIds();
       }
-      return uniqueIds.pop();
+      return uniqueIds[this.uri].pop();
     } catch (err) {
       throw err;
     }
@@ -51,7 +91,14 @@ module.exports = class MongoConnection {
 
   async buildIds(
     qty = 100,
-    collections = ["shipments", "stages", "items", "invoices", "invoices.items"]
+    collections = [
+      "shipments",
+      "stages",
+      "items",
+      "invoices",
+      "invoices.items",
+      "addresses"
+    ]
   ) {
     const ids = [];
     for (let i = 0; i < qty; i++) {
@@ -72,9 +119,9 @@ module.exports = class MongoConnection {
       forDeletion.length
     );
 
-    uniqueIds = ids.filter(id => !forDeletion.includes(id));
-    debug("ids %o", uniqueIds);
-    return uniqueIds;
+    uniqueIds[this.uri] = ids.filter(id => !forDeletion.includes(id));
+    debug("ids %o", uniqueIds[this.uri]);
+    return uniqueIds[this.uri];
   }
 
   async find(collection, query, fields) {
@@ -99,7 +146,7 @@ module.exports = class MongoConnection {
     });
   }
 
-  async findOne(collection, query, fields) {
+  async findOne(collection, query, options = { sort: { "created.at": -1 } }) {
     debug("findOne query %j on collection %s", query, collection);
     await this._initialized;
     return new Promise((resolve, reject) => {
@@ -109,7 +156,7 @@ module.exports = class MongoConnection {
       this.mongoClient
         .db()
         .collection(collection)
-        .findOne(query, { projection: fields }, (err, r) => {
+        .findOne(query, options, (err, r) => {
           if (err) {
             console.error(err);
             reject(err);
@@ -123,6 +170,12 @@ module.exports = class MongoConnection {
 
   async insertMany(collection, array) {
     await this._initialized;
+    array = array.map(obj => {
+      if (!obj.created) {
+        obj.created = createdDT("function");
+      }
+      return obj;
+    });
     return new Promise((resolve, reject) => {
       if (!array || !array.length > 0) {
         reject(new Error("error collection , array not set"));
@@ -149,6 +202,9 @@ module.exports = class MongoConnection {
     return new Promise((resolve, reject) => {
       if (!obj) {
         reject(new Error("error collection , obj not set"));
+      }
+      if (!obj.created) {
+        obj.created = createdDT("function");
       }
       this.mongoClient
         .db()
@@ -181,10 +237,11 @@ module.exports = class MongoConnection {
             reject(err);
           } else {
             debug(
-              "1 doc updated, ex update on collection %s, with query %o, obj:  %o",
+              "doc update done, ex update on collection %s, with query %o, update:  %o , modified %d",
               collection,
               query,
-              update
+              update,
+              r.modifiedCount
             );
             resolve(r);
           }
@@ -218,6 +275,28 @@ module.exports = class MongoConnection {
         });
     });
   }
+  async bulkWrite(collection, array) {
+    await this._initialized;
+    return new Promise((resolve, reject) => {
+      this.mongoClient
+        .db()
+        .collection(collection)
+        .bulkWrite(array, (err, r) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            debug(
+              "query, ex bulkWrite obj: %o, for collection %s",
+              array,
+              collection
+            );
+            debug("Number of documents updated: %o", r.modifiedCount);
+            resolve(r);
+          }
+        });
+    });
+  }
 
   async deleteMany(collection, query) {
     await this._initialized;
@@ -240,3 +319,17 @@ module.exports = class MongoConnection {
     });
   }
 };
+exports.createdDT = createdDT;
+
+// close connections at end
+// process.on("SIGINT", function() {
+//   console.log("close mongo connections");
+//   const connections = Object.keys(mongoClient);
+//   connections.forEach(uri => {
+//     if (!connections[uri]) {
+//       const mongoConn = new MongoConnection(uri);
+//       mongoConn.close();
+//     }
+//   });
+//   process.exit(0);
+// });
