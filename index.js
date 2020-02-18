@@ -1,8 +1,27 @@
 const debug = require("debug")("index");
-require("dotenv-json")();
+const Sentry = require("@sentry/node");
+
+if (process.env.NODE_ENV !== "development") {
+  Sentry.init({
+    release: "simulate@1.0",
+    dsn: "https://e17259a66abc42618cfcc95ca89cc882@sentry.io/2627328"
+  });
+}
+
 const { to } = require("await-to-js");
 
 async function main(params) {
+  const {target} = params.env |||{};
+  let uri;
+        if (target === "test") {
+          uri = params.MONGO_URI_TEST;
+        } else if (target === "live") {
+          uri = params.MONGO_URI_LIVE;
+        } else if (target === "dev") {
+          uri = params.MONGO_URI_DEV;
+        } else {
+          throw Error("target not set");
+        }
   let error;
   let result;
   try {
