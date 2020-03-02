@@ -1,4 +1,4 @@
-const debug = require("debug")("postcode");
+const debug = require("debug")(__filename.slice(__dirname.length + 1, -3));
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { Pool } = require("pg");
 // const { types } = require("pg");

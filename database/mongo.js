@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 
 const { MongoClient } = require("mongodb");
-const debug = require("debug")("mongo");
+const debug = require("debug")(__filename.slice(__dirname.length + 1, -3));
 const MeteorRandom = require("meteor-random");
 const { to } = require("await-to-js");
 

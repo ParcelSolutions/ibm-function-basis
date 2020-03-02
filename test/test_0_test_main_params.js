@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 const { assert } = require("chai");
-const debug = require("debug")("test:main-params");
+const debug = require("debug")(__filename.slice(__dirname.length + 1, -3));
 // gets the global main function
 /* global main */
 require("../index");

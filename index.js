@@ -1,4 +1,4 @@
-const debug = require("debug")("index");
+const debug = require("debug")(__filename.slice(__dirname.length + 1, -3));
 const Sentry = require("@sentry/node");
 
 if (process.env.NODE_ENV !== "development") {
