@@ -3,7 +3,7 @@ const Sentry = require("@sentry/node");
 
 if (process.env.NODE_ENV !== "development") {
   Sentry.init({
-    release: "simulate@1.0",
+    release: "FUNCTIONNAME@1.0",
     dsn: "https://e17259a66abc42618cfcc95ca89cc882@sentry.io/2627328"
   });
 }
@@ -31,10 +31,11 @@ async function main(params) {
       }
 
       default:
+        Sentry.captureMessage('wrong type used');
         return {
           error: {
             code: `unknown type used : ${params.type}`,
-            message: "see log for more information!",
+            message: "wrong type used",
             type: params.type,
             request: params.request
           }
@@ -42,11 +43,11 @@ async function main(params) {
     }
   } catch (e) {
     console.error(e);
-
+    Sentry.captureException(e);
     return {
       error: {
         code: "error while running function",
-        message: "see log for more information!",
+        message: e.message,
         type: params.type,
         request: params.request
       }
