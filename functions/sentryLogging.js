@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== "development") {
 }
 function logError(e) {
   Sentry.captureException(e);
+  return null;
 }
 
 exports.logError = logError;

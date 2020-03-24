@@ -1,17 +1,17 @@
-const debug = require("debug")(__filename.slice(__dirname.length + 1, -3));
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { Pool } = require("pg");
-// const { types } = require("pg");
-// convert numeric to number in js (from text in result pg)
-// types.setTypeParser(1700, "text", parseFloat);
+
 let pool = null;
 
 module.exports = class Pg {
   constructor() {
     if (pool === null) {
+      console.log("create new postgres connection!");
       pool = new Pool({
         connectionString: process.env.POSTGRESS_URI,
-        ssl: true
+        // idleTimeoutMillis: 10000,
+        ssl: true,
+        max: 5
       });
     }
     this.pool = pool;
@@ -21,14 +21,31 @@ module.exports = class Pg {
     return this.pool
       .query("SELECT NOW()")
       .then(res => res.rows[0])
-      .catch(err => err.stack);
+      .catch(err => {
+        console.error("Error executing query", err.stack);
+        throw err;
+      });
   }
 
   runQuery(query) {
-    debug("run this postgress query %s", query);
     return this.pool
       .query(query)
       .then(res => res.rows)
-      .catch(err => err.stack);
+      .catch(err => {
+        console.error("Error executing query", err.stack);
+        throw err;
+      });
+  }
+
+  async endPgPool() {
+    console.log("pg connections open:", this.pool.totalCount);
+    this.pool.end().then(() => {
+      console.log("PG pool has ended");
+      console.log(
+        "pg connections open after close event:",
+        this.pool.totalCount
+      );
+      return true;
+    });
   }
 };
