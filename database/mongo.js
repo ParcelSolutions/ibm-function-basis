@@ -27,7 +27,9 @@ exports.MongoConnection = class MongoConnection {
       this.mongoClient = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        sslValidate: false
+        sslValidate: false,
+        poolSize: 5,
+        bufferMaxEntries: 0
       });
 
       this.uri = uri;
