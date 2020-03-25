@@ -6,7 +6,8 @@ const isProduction = process.env.NODE_ENV === "production";
 const plugins = [
   new webpack.ContextReplacementPlugin(/.*/),
   new webpack.IgnorePlugin(/^pg-native$/),
-  new webpack.IgnorePlugin(/^mongodb-client-encryption$/)
+  new webpack.IgnorePlugin(/^mongodb-client-encryption$/),
+  new webpack.IgnorePlugin(/^hiredis$/)
 ];
 
 module.exports = {
