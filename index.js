@@ -5,4 +5,5 @@ const RedisConnection = require("./database/redis");
 exports.createdDT = createdDT;
 exports.MongoConnection = MongoConnection;
 exports.PG = PG;
+exports.PostgresConnection = PG;
 exports.RedisConnection = RedisConnection;
