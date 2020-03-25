@@ -1,13 +1,5 @@
 const debug = require("debug")(__filename.slice(__dirname.length + 1, -3));
-const Sentry = require("@sentry/node");
-
-if (process.env.NODE_ENV !== "development") {
-  Sentry.init({
-    release: "FUNCTIONNAME@1.0",
-    dsn: "https://e17259a66abc42618cfcc95ca89cc882@sentry.io/2627328"
-  });
-}
-
+const {logError} = require("./functions/sentryLogging");
 const { to } = require("await-to-js");
 
 async function main(params) {
@@ -19,10 +11,13 @@ async function main(params) {
           uri = params.MONGO_URI_LIVE;
         } else if (target === "dev") {
           uri = params.MONGO_URI_DEV;
+        } 
+        else if (params.DB_URL) {
+          // if db url is send in message
+          uri = params.DB_URL;
         } else {
           throw Error("target not set");
         }
-  let error;
   let result;
   try {
     switch ((params.type || "").toLowerCase()) {
@@ -31,7 +26,7 @@ async function main(params) {
       }
 
       default:
-        Sentry.captureMessage('wrong type used');
+        Sentry.captureMessage('wrong type used:'+ type);
         return {
           error: {
             code: `unknown type used : ${params.type}`,
@@ -43,7 +38,7 @@ async function main(params) {
     }
   } catch (e) {
     console.error(e);
-    Sentry.captureException(e);
+    logError(e, type, request);
     return {
       error: {
         code: "error while running function",

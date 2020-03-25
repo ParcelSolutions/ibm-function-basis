@@ -1,12 +1,20 @@
 const Sentry = require("@sentry/node");
 
-if (process.env.NODE_ENV !== "development") {
+if (process.env.NODE_ENV !== "development" && process.env.SENTRY_DNS) {
   Sentry.init({
-    release: "FUNCTIONNAME@1.0",
-    dsn: "https://e17259a66abc42618cfcc95ca89cc882@sentry.io/2627328"
+    release: "serverlessFunction",
+    dsn: process.env.SENTRY_DNS
   });
 }
-function logError(e) {
+function logError(e, type, request) {
+  Sentry.configureScope(scope => {
+    scope.setExtra("request", request);
+  });
+
+  Sentry.addBreadcrumb({
+    category: type,
+    level: Sentry.Severity.Info
+  });
   Sentry.captureException(e);
   return null;
 }
