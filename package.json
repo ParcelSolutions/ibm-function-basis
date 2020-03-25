@@ -7,7 +7,6 @@
     "test": "test"
   },
   "scripts": {
-    "setup": "npm prune && npm install && npm install price-lookup ",
     "test": "export DEBUG='test*,index' NODE_ENV='development' && mocha --exit || true ",
     "buildwebpacktest": "npm audit && export NODE_ENV='development' && webpack --config webpack.config.js && mocha -g 'test main' && exit 1",
     "buildwebpack": "export NODE_ENV='production' && webpack --config webpack.config.js",
