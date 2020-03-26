@@ -1,6 +1,9 @@
 #!/bin/sh
 #export githubToken=""
 #export githubUsername=""
+git config --global user.email $githubEmail
+git config --global user.name $githubName
+
 entryFile=$1
 actionName=$2
 export ENTRY_FILE=$1
