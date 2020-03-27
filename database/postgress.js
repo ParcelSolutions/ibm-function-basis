@@ -5,6 +5,9 @@ let pool = null;
 
 module.exports = class Pg {
   constructor() {
+    if (!process.env.POSTGRESS_URI) {
+      throw Error("missing POSTGRESS_URI env setting!");
+    }
     if (pool === null) {
       console.log("create new postgres connection!");
       pool = new Pool({
