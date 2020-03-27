@@ -15,6 +15,9 @@ module.exports = class RedisConnection {
       return existingRedisConnection;
     }
     return new Promise((resolve, reject) => {
+      if (!process.env.REDIS_URL) {
+        throw Error("env REDIS_URL missing!");
+      }
       const client = redis.createClient(process.env.REDIS_URL, {
         tls: {
           rejectUnauthorized: false,
