@@ -35,7 +35,8 @@ exports.MongoConnection = class MongoConnection {
         useUnifiedTopology: true,
         sslValidate: false,
         poolSize: 5,
-        bufferMaxEntries: 0
+        bufferMaxEntries: 0,
+        connectTimeoutMS: 5000
       });
 
       this.uri = uri;
@@ -81,14 +82,14 @@ exports.MongoConnection = class MongoConnection {
     }
   }
 
-  async close() {
-    if (mongoConnection[this.uri]) {
+  async close(uri) {
+    if (mongoConnection[this.uri || uri]) {
       console.log("mongoclient exists, lets close it!");
       try {
         const conn = await this.connect();
         if (!conn) throw Error("no db connection!");
         await conn.close();
-        mongoConnection[this.uri] = null;
+        mongoConnection[this.uri || uri] = null;
       } catch (e) {
         throw e;
       }

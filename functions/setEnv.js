@@ -1,5 +1,6 @@
 exports.setEnv = params => {
   process.env.POSTGRESS_URI = params.POSTGRESS_URI || process.env.POSTGRESS_URI;
+  process.env.MONGO_URI = params.MONGO_URI || process.env.MONGO_URI;
   process.env.MONGO_URI_DEV = params.MONGO_URI_DEV || process.env.MONGO_URI_DEV;
   process.env.MONGO_URI_TEST =
     params.MONGO_URI_TEST || process.env.MONGO_URI_TEST;

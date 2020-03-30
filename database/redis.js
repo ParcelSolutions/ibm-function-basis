@@ -15,6 +15,9 @@ module.exports = class RedisConnection {
       return existingRedisConnection;
     }
     return new Promise((resolve, reject) => {
+      if (!process.env.REDIS_URL) {
+        throw Error("env REDIS_URL missing!");
+      }
       const client = redis.createClient(process.env.REDIS_URL, {
         tls: {
           rejectUnauthorized: false,
@@ -46,11 +49,11 @@ module.exports = class RedisConnection {
     });
   }
 
-  close() {
+  static close() {
     return new Promise((resolve, reject) => {
       // use the connection to add the key and data , expiry in x (30) day
       try {
-        this.client.quit();
+        if (existingRedisConnection) existingRedisConnection.quit();
         existingRedisConnection = null;
         console.log("redis client quit");
         resolve(true);

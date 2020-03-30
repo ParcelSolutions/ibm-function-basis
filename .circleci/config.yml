@@ -73,11 +73,11 @@ jobs:
       - run:
           name: "build transmate bundle"
           command: |
-            npm run build-transmate
+            npm run push-actions
       - store_artifacts:
-          path: ./dist/api-local.js
-          destination: action_api.js
+          path: ./dist/bundle-local.js
+          destination: bundle-local.js
       - deploy:
           name: "Deploy code to ibm"
           command: |
-            npm run deploy-dev
+            npm run deploy

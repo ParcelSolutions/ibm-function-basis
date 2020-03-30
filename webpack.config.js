@@ -12,11 +12,11 @@ const plugins = [
 
 module.exports = {
   optimization: { minimize: isProduction },
-  entry: "./index.js",
+  entry: process.env.ENTRY_FILE,
   plugins,
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js"
+    path: path.resolve(__dirname, "../dist"),
+    filename: `bundle${isProduction ? "" : "-local"}.js`
   },
   mode: "production",
   module: {
