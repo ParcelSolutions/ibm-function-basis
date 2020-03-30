@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 const { expect } = require("chai");
 const debug = require("debug")("test:localhost error mng");
@@ -12,6 +13,7 @@ describe("main-schema", function() {
     // test existing post code
 
     expect(function() {
+      // eslint-disable-next-line no-new
       new MongoConnection("mongodb://localhost:27017/myproject");
     }).to.throw("don't connect to localhost db when running on openwhisk!");
   });
