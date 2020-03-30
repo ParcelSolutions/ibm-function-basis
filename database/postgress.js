@@ -14,7 +14,7 @@ module.exports = class Pg {
         connectionString: process.env.POSTGRESS_URI,
         // idleTimeoutMillis: 10000,
         ssl: true,
-        max: 5
+        max: 3
       });
     }
     this.pool = pool;
@@ -40,7 +40,7 @@ module.exports = class Pg {
       });
   }
 
-  async endPgPool() {
+  async close() {
     console.log("pg connections open:", this.pool.totalCount);
     this.pool.end().then(() => {
       console.log("PG pool has ended");
@@ -48,6 +48,7 @@ module.exports = class Pg {
         "pg connections open after close event:",
         this.pool.totalCount
       );
+      pool = null;
       return true;
     });
   }
