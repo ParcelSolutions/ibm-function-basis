@@ -23,6 +23,12 @@ exports.MongoConnection = class MongoConnection {
     if (!uri && typeof uri === "string") {
       throw Error("uri should always be set!");
     }
+    if (
+      process.env.__OW_ACTIVATION_ID &&
+      (uri.includes("localhost") || uri.includes("127.0.0.1"))
+    ) {
+      throw Error("don't connect to localhost db when running on openwhisk!");
+    }
     try {
       this.mongoClient = new MongoClient(uri, {
         useNewUrlParser: true,
