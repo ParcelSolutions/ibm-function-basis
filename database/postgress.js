@@ -40,16 +40,14 @@ module.exports = class Pg {
       });
   }
 
-  async close() {
-    console.log("pg connections open:", this.pool.totalCount);
-    this.pool.end().then(() => {
-      console.log("PG pool has ended");
-      console.log(
-        "pg connections open after close event:",
-        this.pool.totalCount
-      );
-      pool = null;
-      return true;
-    });
+  static async close() {
+    console.log("pg connections open:", (pool || {}).totalCount || 0);
+    if (pool) {
+      console.log("close postgres!");
+      await pool.end();
+    }
+
+    pool = null;
+    return true;
   }
 };
