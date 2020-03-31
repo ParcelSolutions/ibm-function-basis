@@ -12,7 +12,7 @@ const uniqueIds = {};
 function createdDT(userId) {
   // debug("timestamp for %s", userId);
   return {
-    by: userId,
+    by: userId || "88888function88888",
     at: new Date(),
     atms: Date.now()
   };
@@ -359,6 +359,34 @@ exports.MongoConnection = class MongoConnection {
           }
         });
     });
+  }
+
+  async createNotification(type, event, data) {
+    debug("create a notification %o", { type, event, data });
+    const [error, conn] = await to(this.connect());
+    if (error) throw error;
+    return new Promise((resolve, reject) => {
+      if (!type || !data || !event) {
+        reject(new Error("error type/event or data not set"));
+      }
+
+      conn
+        .db()
+        .collection("worker.notifications")
+        .insertOne({ type, event, data }, (err, r) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            debug("notification inserted type %o , event %o", type, event);
+            resolve(r);
+          }
+        });
+    });
+  }
+
+  static createdDT(userId) {
+    return createdDT(userId);
   }
 };
 exports.createdDT = createdDT;
