@@ -14,4 +14,5 @@ exports.setEnv = params => {
     params.IBM_FUNCTION_KEY || process.env.IBM_FUNCTION_KEY;
   process.env.REDIS_URL = params.REDIS_URL || process.env.REDIS_URL;
   process.env.JWT_SECRET = params.JWT_SECRET || process.env.JWT_SECRET;
+  process.env.SENTRY_DNS = params.SENTRY_DNS || process.env.SENTRY_DNS;
 };
