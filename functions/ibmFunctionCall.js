@@ -4,7 +4,9 @@ const rq = require("request");
 
 exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
   if (!url || (!apiKey && !token) || !params) {
-    throw Error("missing ibm function key or token!");
+    console.log(
+      "WARNING: ibmFunctionCall call is missing some required keys, missing ibm function key or token!"
+    );
   }
   return new Promise((resolve, reject) => {
     // use function to cover unique ids (loop) and only build that function once

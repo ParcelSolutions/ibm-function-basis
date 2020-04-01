@@ -1,4 +1,4 @@
-exports.setEnv = params => {
+exports.setEnv = (params = {}) => {
   if (params.POSTGRESS_URI || process.env.POSTGRESS_URI)
     process.env.POSTGRESS_URI =
       params.POSTGRESS_URI || process.env.POSTGRESS_URI;
