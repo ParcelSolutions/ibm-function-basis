@@ -9,6 +9,7 @@ const { ibmFunctionCall } = require("./functions/ibmFunctionCall");
 exports.createdDT = createdDT;
 exports.MongoConnection = MongoConnection;
 exports.PG = PostgresConnection;
+exports.Pg = PostgresConnection;
 exports.PostgresConnection = PostgresConnection;
 exports.RedisConnection = RedisConnection;
 exports.logError = logError;

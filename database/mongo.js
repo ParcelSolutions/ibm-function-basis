@@ -29,47 +29,35 @@ exports.MongoConnection = class MongoConnection {
     ) {
       throw Error("don't connect to localhost db when running on openwhisk!");
     }
-    try {
-      this.mongoClient = new MongoClient(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        sslValidate: false,
-        poolSize: 5,
-        bufferMaxEntries: 0,
-        connectTimeoutMS: 5000
-      });
 
-      this.uri = uri;
-      // this._initialized = this._initialize();
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-    // if (!this.mongoClient || !this.connect()) {
-    //   throw Error("not able to create connection to mongo!");
-    // }
+    this.mongoSettings = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      sslValidate: false,
+      poolSize: 5,
+      bufferMaxEntries: 0,
+      connectTimeoutMS: 5000,
+      autoReconnect: false
+    };
+
+    this.uri = uri;
   }
 
   async connect() {
-    // actual async constructor logic
-    let connection = null;
     if (!mongoConnection[this.uri]) {
       debug("setup connection with ", this.uri);
-      let error;
-      [error, connection] = await to(this.mongoClient.connect());
-      mongoConnection[this.uri] = connection;
-      if (error) {
-        debug("issue with db connnection", error);
-        throw error;
-      }
-      if (!connection) {
+      try {
+        const client = await MongoClient.connect(this.uri, this.mongoSettings);
+        mongoConnection[this.uri] = client;
+        console.log("start mongodb conn");
+      } catch (error) {
+        console.error(error);
         throw Error("not able to connect to db!");
       }
     } else {
       debug("connection exists !");
-      connection = mongoConnection[this.uri];
     }
-    return connection;
+    return mongoConnection[this.uri];
   }
 
   async db() {
