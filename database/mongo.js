@@ -373,7 +373,7 @@ exports.MongoConnection = class MongoConnection {
       conn
         .db()
         .collection("worker.notifications")
-        .insertOne({ type, event, data }, (err, r) => {
+        .insertOne({ type, event, data, createdDT: createdDT() }, (err, r) => {
           if (err) {
             console.error(err);
             reject(err);
