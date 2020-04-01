@@ -2,9 +2,9 @@ const debug = require("debug")("ibm-functions");
 
 const rq = require("request");
 
-exports.ibmFunctionCall = (url, apiKey, params) => {
-  if (!url || !apiKey || !params) {
-    throw Error("missing ibm function key!");
+exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
+  if (!url || (!apiKey && !token) || !params) {
+    throw Error("missing ibm function key or token!");
   }
   return new Promise((resolve, reject) => {
     // use function to cover unique ids (loop) and only build that function once
@@ -13,6 +13,7 @@ exports.ibmFunctionCall = (url, apiKey, params) => {
       {
         headers: {
           apiKey,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         url,
