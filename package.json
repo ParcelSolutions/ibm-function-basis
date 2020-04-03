@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "export DEBUG='test*,index' NODE_ENV='development' && mocha --exit || true ",
-    "release" : "release-flow start && release-flow publish && release-flow finish",
+    "release": "release-flow start && release-flow publish && release-flow finish",
     "buildwebpacktest": "npm audit && export NODE_ENV='development' && webpack --config webpack.config.js && mocha -g 'test main' && exit 1",
     "buildwebpack": "export NODE_ENV='production' && webpack --config webpack.config.js",
     "create": "ibmcloud fn action create ibm-function-basis dist/bundle.js --kind nodejs:10",
