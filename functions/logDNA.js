@@ -4,7 +4,7 @@ if (!process.env.LOGDNA) {
   console.log("Log DNA not enabled, set LOGDNA to enable");
 }
 
-function LogData(message, meta, level = "warn") {
+function LogData(message, meta = {}, level = "warn") {
   // console.log("log action", { message, meta, level });
   if (process.env.LOGDNA) {
     const logger = Logger.createLogger(process.env.LOGDNA, {
