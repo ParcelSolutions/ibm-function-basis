@@ -2,10 +2,6 @@ const Sentry = require("@sentry/node");
 const debug = require("debug")("sentryLogging");
 const { LogData } = require("./logDNA");
 
-if (process.env.NODE_ENV !== "development" && !process.env.SENTRY_DNS) {
-  console.log("sentry not enabled, set SENTRY_DNS to enable");
-}
-
 function logError(e, type, request) {
   LogData(e.message, { type, request }, "error");
   if (
@@ -28,6 +24,7 @@ function logError(e, type, request) {
     });
     Sentry.captureException(e);
   } else {
+    console.log("sentry not enabled, set SENTRY_DNS to enable");
     debug(e, type, request);
   }
   return null;

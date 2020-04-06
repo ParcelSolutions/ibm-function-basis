@@ -1,21 +1,26 @@
 /* eslint-disable no-underscore-dangle */
 const Logger = require("logdna");
 
-if (!process.env.LOGDNA) {
-  console.log("Log DNA not enabled, set LOGDNA to enable");
-}
-
-function LogData(message, meta = {}, level = "warn") {
+function LogData(message, data, level = "warn") {
+  if (!process.env.LOGDNA) {
+    console.log("Log DNA not enabled, set LOGDNA to enable");
+  }
   // console.log("log action", { message, meta, level });
   try {
     if (process.env.LOGDNA) {
+      const meta = {
+        NODE_ENV: process.env.NODE_ENV,
+        nameSpace: process.env.__OW_NAMESPACE,
+        method: process.env.FUNCTION_METHOD,
+        app: process.env.__OW_ACTION_NAME || "OWfunction",
+        data
+      };
       const logger = Logger.createLogger(process.env.LOGDNA, {
-        app: process.env.__OW_ACTION_NAME,
-        index_meta: true
+        index_meta: true,
+        app: meta.app.substring(meta.app.length - 30, meta.app.length),
+        tags: ["function", "nodejs"]
       });
-      meta.NODE_ENV = process.env.NODE_ENV;
-      meta.nameSpace = process.env.__OW_NAMESPACE;
-      meta.method = process.env.FUNCTION_METHOD;
+
       const opts = {
         level,
         meta
