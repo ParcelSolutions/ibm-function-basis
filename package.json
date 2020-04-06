@@ -25,6 +25,7 @@
     "debug": "^4.1.1",
     "dotenv": "^8.1.0",
     "dotenv-json": "^1.0.0",
+    "logdna": "^3.5.0",
     "meteor-random": "0.0.3",
     "mongodb": "^3.3.0",
     "node-geocoder": "^3.23.0",

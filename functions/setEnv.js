@@ -1,4 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 exports.setEnv = (params = {}) => {
+  if (params.__ow_method) process.env.FUNCTION_METHOD = params.__ow_method;
+
+  process.env.FUNCTION_NAME = process.env.__OW_ACTION_NAME;
+
   if (params.POSTGRESS_URI || process.env.POSTGRESS_URI)
     process.env.POSTGRESS_URI =
       params.POSTGRESS_URI || process.env.POSTGRESS_URI;
@@ -40,4 +45,7 @@ exports.setEnv = (params = {}) => {
 
   if (params.SENTRY_DNS || process.env.SENTRY_DNS)
     process.env.SENTRY_DNS = params.SENTRY_DNS || process.env.SENTRY_DNS;
+
+  if (params.LOGDNA || process.env.LOGDNA)
+    process.env.LOGDNA = params.LOGDNA || process.env.LOGDNA;
 };
