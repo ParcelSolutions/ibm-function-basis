@@ -6,6 +6,7 @@ const { LogData } = require("./functions/logDNA");
 const { logError } = require("./functions/sentryLogging");
 const closeConnections = require("./functions/closeConnections");
 const { ibmFunctionCall } = require("./functions/ibmFunctionCall");
+const { decodeBase64 } = require("./functions/utils");
 
 exports.createdDT = createdDT;
 exports.MongoConnection = MongoConnection;
@@ -18,3 +19,4 @@ exports.setEnv = setEnv;
 exports.LogData = LogData;
 exports.closeConnections = closeConnections;
 exports.ibmFunctionCall = ibmFunctionCall;
+exports.decodeBase64 = decodeBase64;
