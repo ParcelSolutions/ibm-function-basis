@@ -8,7 +8,19 @@ const { to } = require("await-to-js");
 
 const mongoConnection = {};
 const uniqueIds = {};
-
+function padding(pad, user_str, pad_pos)
+{
+  if (typeof user_str === 'undefined') 
+    return pad;
+  if (pad_pos == 'l')
+     {
+     return (pad + user_str).slice(-pad.length);
+     }
+  else 
+    {
+    return (user_str + pad).substring(0, pad.length);
+    }
+}
 function createdDT(userId) {
   // debug("timestamp for %s", userId);
   return {
@@ -372,7 +384,49 @@ exports.MongoConnection = class MongoConnection {
         });
     });
   }
+  async generateAccountId(type="carrier"){
 
+      let typeCode;
+      const min = 1;
+      const max = 99999;
+  
+      switch (type) {
+        case "shipper":
+          typeCode = "S";
+          break;
+        case "carrier":
+          typeCode = "C";
+          break;
+        case "provider":
+          typeCode = "P";
+          break;
+        default:
+          typeCode = "S";
+      }
+      //try to create a new id for account and see if it is unique
+      let accountId
+      
+      try {
+        let obj = true;
+        do {
+          const number = Math.floor(Math.random() * (max - min + 1) + min);      
+          accountId = `${typeCode}${padding("00000" , number, "l")}`;
+          debug("check account id :", accountId)
+          obj = await this.findOne("accounts", {_id : accountId},{_id:1})
+        } while (obj)
+        
+      } catch (err) {
+        console.error(err);
+        throw Error("issue when generating accountID")
+      }
+
+      
+      
+
+
+      return accountId;
+    
+  }
   static createdDT(userId) {
     return createdDT(userId);
   }
