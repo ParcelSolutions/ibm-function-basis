@@ -404,7 +404,7 @@ exports.MongoConnection = class MongoConnection {
           typeCode = "S";
       }
       //try to create a new id for account and see if it is unique
-      let accountId
+      let accountId ;
       
       try {
         let obj = true;
