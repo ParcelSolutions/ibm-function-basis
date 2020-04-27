@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { Pool } = require("pg");
+const debug = require("debug")("mongo");
 
 let pool = null;
 
