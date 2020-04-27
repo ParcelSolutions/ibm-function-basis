@@ -12,32 +12,40 @@ module.exports = class Pg {
       console.log("create new postgres connection!");
       pool = new Pool({
         connectionString: process.env.POSTGRESS_URI,
+        connectionTimeoutMillis: 2000,
         // idleTimeoutMillis: 10000,
-        ssl: true,
-        max: 3
+        max: 3,
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
       });
     }
     this.pool = pool;
   }
 
-  testPgConnection() {
-    return this.pool
-      .query("SELECT NOW()")
-      .then(res => ((res || {}).rows || [])[0])
-      .catch(err => {
-        console.error("Error executing query", err.stack);
-        throw err;
-      });
+  async testPgConnection() {
+    try {
+      const client = await this.pool.connect();
+      const result = await client.query("SELECT NOW()");
+      client.release();
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error executing query", error.stack);
+      throw error;
+    }
   }
 
-  runQuery(query) {
-    return this.pool
-      .query(query)
-      .then(res => res.rows)
-      .catch(err => {
-        console.error("Error executing query", err.stack);
-        throw err;
-      });
+  async runQuery(query) {
+    try {
+      const client = await this.pool.connect();
+      const result = await client.query(query);
+      client.release();
+      return result.rows;
+    } catch (error) {
+      console.error("Error executing query", error.stack);
+      throw error;
+    }
   }
 
   static async close() {
