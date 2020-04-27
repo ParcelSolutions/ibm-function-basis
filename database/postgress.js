@@ -23,7 +23,7 @@ module.exports = class Pg {
   testPgConnection() {
     return this.pool
       .query("SELECT NOW()")
-      .then(res => res.rows[0])
+      .then(res => ((res || {}).rows || [])[0])
       .catch(err => {
         console.error("Error executing query", err.stack);
         throw err;
