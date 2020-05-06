@@ -52,7 +52,7 @@ exports.MongoConnection = class MongoConnection {
 
   async connect() {
     if (!mongoConnection[this.uri]) {
-      debug("setup connection with ", this.uri);
+      debug("setup connection with ", this.uri.slice(0,12));
       try {
         const client = await MongoClient.connect(this.uri, this.mongoSettings);
         mongoConnection[this.uri] = client;
@@ -67,11 +67,11 @@ exports.MongoConnection = class MongoConnection {
     return mongoConnection[this.uri];
   }
 
-  async db() {
+  async db(dbName) {
     try {
       const conn = await this.connect();
       if (!conn) throw Error("no db connection!");
-      return conn.db();
+      return conn.db(dbName);
     } catch (e) {
       throw e;
     }
