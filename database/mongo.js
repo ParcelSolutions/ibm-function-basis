@@ -19,7 +19,7 @@ function padding(pad, user_str, pad_pos) {
 function createdDT(userId) {
   // debug("timestamp for %s", userId);
   return {
-    by: userId || "88888function88888",
+    by: userId || "function",
     at: new Date(),
     atms: Date.now()
   };
@@ -52,7 +52,7 @@ exports.MongoConnection = class MongoConnection {
 
   async connect() {
     if (!mongoConnection[this.uri]) {
-      debug("setup connection with ", this.uri.slice(0,12));
+      debug("setup connection with ", this.uri.slice(0, 12));
       try {
         const client = await MongoClient.connect(this.uri, this.mongoSettings);
         mongoConnection[this.uri] = client;
