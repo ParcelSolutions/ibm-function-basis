@@ -1,0 +1,4 @@
+dist/
+dist/*
+**/dist/*.js
+**/node_modules/*
