@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-underscore-dangle */
 
@@ -10,7 +11,7 @@ const mongoConnection = {};
 const uniqueIds = {};
 function padding(pad, user_str, pad_pos) {
   if (typeof user_str === "undefined") return pad;
-  if (pad_pos == "l") {
+  if (pad_pos === "l") {
     return (pad + user_str).slice(-pad.length);
   }
 
@@ -197,8 +198,9 @@ exports.MongoConnection = class MongoConnection {
   }
 
   async insertMany(collection, array) {
-    array = array.map(obj => {
+    const insertManyArray = array.map(obj => {
       if (!obj.created) {
+        // eslint-disable-next-line no-param-reassign
         obj.created = createdDT("function");
       }
       return obj;
@@ -206,18 +208,18 @@ exports.MongoConnection = class MongoConnection {
     const [error, conn] = await to(this.connect());
     if (error) throw error;
     return new Promise((resolve, reject) => {
-      if (!array || !array.length > 0) {
+      if (!insertManyArray || !insertManyArray.length > 0) {
         reject(new Error("error collection , array not set"));
       }
       conn
         .db()
         .collection(collection)
-        .insertMany(array, (err, r) => {
+        .insertMany(insertManyArray, (err, r) => {
           if (err) {
             console.error(err);
             reject(err);
           } else {
-            debug("inserted ex:  %o", array[0]);
+            debug("inserted ex:  %o", insertManyArray[0]);
             debug("Number of documents inserted: %o", r.insertedCount);
             debug("result of insert many: %o", r);
             resolve(r);
@@ -234,6 +236,7 @@ exports.MongoConnection = class MongoConnection {
         reject(new Error("error collection , obj not set"));
       }
       if (!obj.created) {
+        // eslint-disable-next-line no-param-reassign
         obj.created = createdDT("function");
       }
       conn
@@ -407,6 +410,7 @@ exports.MongoConnection = class MongoConnection {
         const number = Math.floor(Math.random() * (max - min + 1) + min);
         accountId = `${typeCode}${padding("00000", number, "l")}`;
         debug("check account id :", accountId);
+        // eslint-disable-next-line no-await-in-loop
         obj = await this.findOne("accounts", { _id: accountId }, { _id: 1 });
       } while (obj);
     } catch (err) {

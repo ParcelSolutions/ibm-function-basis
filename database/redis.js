@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const debug = require("debug")("redis");
 const redis = require("redis");
 
@@ -25,7 +26,7 @@ module.exports = class RedisConnection {
         }
       });
       const redisDB = process.env.NODE_ENV === "production" ? 0 : 1;
-      client.select(redisDB, (err, res) => {
+      client.select(redisDB, (_err, _res) => {
         console.log("connect to redis db :#", redisDB);
       });
 
@@ -93,7 +94,7 @@ module.exports = class RedisConnection {
         JSON.stringify(data),
         "EX",
         60 * 60 * 24 * historyDays,
-        (error, result) => {
+        (error, _result) => {
           if (error) {
             reject(error);
           } else {

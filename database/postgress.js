@@ -39,6 +39,7 @@ module.exports = class Pg {
 
   async runQuery(query) {
     try {
+      debug("run pq %o", query);
       const client = await this.pool.connect();
       const result = await client.query(query);
       client.release();
