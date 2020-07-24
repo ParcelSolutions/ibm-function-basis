@@ -1,8 +1,14 @@
+const debug = require("debug")("decodebase64");
+
 exports.decodeBase64 = body => {
   if (typeof body !== "string")
     throw Error("body should be string when trying this function");
   try {
     const decodedString = Buffer.from(body, "base64").toString("utf8"); // Ta-da
+    debug("decodedString", decodedString);
+    // remove new lines and tabs if needed for badly formated json
+    // decodedString = decodedString.replace(/(\r\n|\n|\r)/gm, " ");
+    // debug("cleaned", decodedString);
     const obj = JSON.parse(decodedString);
     return obj;
   } catch (error) {
