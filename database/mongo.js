@@ -383,6 +383,42 @@ exports.MongoConnection = class MongoConnection {
     });
   }
 
+  async createActivity({ userId, accountId, activity, data }) {
+    debug("create an activity registration %o", {
+      userId,
+      accountId,
+      activity,
+      data
+    });
+    const [error, conn] = await to(this.connect());
+    if (error) throw error;
+    return new Promise((resolve, reject) => {
+      if (!userId || !activity || !accountId) {
+        resolve(null);
+      }
+
+      conn
+        .db()
+        .collection("users.activity")
+        .insertOne(
+          { userId, accountId, activity, data, ts: new Date() },
+          (err, r) => {
+            if (err) {
+              console.error(err);
+              reject(err);
+            } else {
+              debug(
+                "activity inserted account %o , activity %o",
+                accountId,
+                activity
+              );
+              resolve(r);
+            }
+          }
+        );
+    });
+  }
+
   async generateAccountId(type = "carrier") {
     let typeCode;
     const min = 1;
