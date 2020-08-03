@@ -12,7 +12,7 @@ module.exports = async function logActivity({
 }) {
   let mongoConn = mongo;
   const uri = getUri(mongoUri, target);
-  if (!mongoConn && mongoUri) {
+  if (!mongoConn && uri) {
     try {
       mongoConn = new MongoConnection(uri);
     } catch (e) {
