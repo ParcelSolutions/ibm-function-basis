@@ -40,7 +40,7 @@ const logger = createLogger({
     //   decolorize: true
     // }),
     new WinstonBigQuery({
-      level: "info",
+      level: "warn",
       create: false,
       schema: bqLogSchema,
       dataset: "logs",
@@ -59,6 +59,7 @@ const logger = createLogger({
     //   decolorize: true
     // }),
     new WinstonBigQuery({
+      level: 'info',
       create: false,
       schema: bqLogSchema,
       dataset: "logs",

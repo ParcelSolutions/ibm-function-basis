@@ -23,9 +23,9 @@ const meta = logMeta({
   userId: "2",
   accountId: "3",
   target: "test",
-  newKey:"test new data"
+  newKey:"error"
 })
 console.log("meta" , meta)
-logger.info("shipment.created", meta);
+logger.error("shipment.created", meta);
 
 throw Error("test winston logging");
