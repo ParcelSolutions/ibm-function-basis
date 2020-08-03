@@ -25,7 +25,12 @@ logger.add("info","test1", {
 
 logger.add("debug","test2", {});
 try{
-  logger.add("warn","test3");
+  logger.add("warn","test3", {
+    userId: "1",
+    accountId: "2",
+    target: "test",
+    extra:"extra data"
+  });
   throw Error("test4 error throw");
 }catch(e){
 

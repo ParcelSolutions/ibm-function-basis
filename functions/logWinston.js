@@ -1,5 +1,5 @@
-
 const debug = require("debug")("log:winston");
+const _ = require("lodash");
 /* eslint-disable no-underscore-dangle */
 const { createLogger, format, transports } = require("winston");
 
@@ -39,9 +39,9 @@ function logMeta(data = {}) {
       method: process.env.FUNCTION_METHOD,
       app: process.env.__OW_ACTION_NAME || "OWfunction",
       ...data,
-      metadata: data
     };
-    return meta;
+    const keyData = _.pick(meta, bqLogSchema.keys());
+    return { ...keyData, metadata: meta };
   } catch (error) {
     console.error("error when trying to build error obj", error);
     return data;
@@ -50,13 +50,18 @@ function logMeta(data = {}) {
 
 class Logging {
   constructor() {
-    debug("initiate class , env set? :" , process.env.GOOGLE_CREDENTIALS.slice(0,20))
-    this.logger = null;// we can not set the logger yet (env not set)
+    debug(
+      "initiate class , env set? :",
+      process.env.GOOGLE_CREDENTIALS.slice(0, 20)
+    );
+    this.logger = null; // we can not set the logger yet (env not set)
   }
 
-
   setup() {
-    debug("setup logger with google creds,  set? : " , process.env.GOOGLE_CREDENTIALS.slice(0,20))
+    debug(
+      "setup logger with google creds,  set? : ",
+      process.env.GOOGLE_CREDENTIALS.slice(0, 20)
+    );
     this.logger = createLogger({
       level: "debug",
       format: combine(simple()),
@@ -65,8 +70,8 @@ class Logging {
           level: "error",
           db: process.env.MONGO_URI_TEST,
           collection: "logs.exceptions",
-          options: { autoReconnect: false, tlsInsecure:true},
-          decolorize: true
+          options: { autoReconnect: false, tlsInsecure: true },
+          decolorize: true,
         }),
         new WinstonBigQuery({
           level: "warn",
@@ -84,8 +89,8 @@ class Logging {
         new transports.MongoDB({
           db: process.env.MONGO_URI_TEST,
           collection: "logs.activity",
-          options: { autoReconnect: false,tlsInsecure:true },
-          decolorize: true
+          options: { autoReconnect: false, tlsInsecure: true },
+          decolorize: true,
         }),
         new WinstonBigQuery({
           level: "info",
@@ -105,4 +110,3 @@ class Logging {
 }
 
 exports.Logging = Logging;
-
