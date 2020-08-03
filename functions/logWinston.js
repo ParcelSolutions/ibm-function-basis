@@ -40,7 +40,7 @@ function logMeta(data = {}) {
       app: process.env.__OW_ACTION_NAME || "OWfunction",
       ...data,
     };
-    const keyData = _.pick(meta, bqLogSchema.keys());
+    const keyData = _.pick(meta, Object.keys(bqLogSchema));
     return { ...keyData, metadata: meta };
   } catch (error) {
     console.error("error when trying to build error obj", error);
