@@ -51,18 +51,26 @@ function logMeta(data = {}) {
 class Logging {
   constructor() {
     debug("initiate class");
-    this.logger = null; // we can not set the logger yet (env not set)
   }
 
   setup() {
     debug("setup logger ");
     if (globalLogger) {
+      debug("reuse existing logger");
       this.logger = globalLogger;
       return this;
     }
     this.logger = createLogger({
-      level: "debug",
-      format: combine(simple()),
+      level: "info",
+      format: combine(
+        format.combine(
+          format.timestamp({
+            format: "YYYY-MM-DD HH:mm:ss",
+          }),
+          format.errors({ stack: true }),
+          format.json()
+        )
+      ),
       exceptionHandlers: [
         new transports.MongoDB({
           level: "error",
@@ -71,13 +79,13 @@ class Logging {
           options: { autoReconnect: false, tlsInsecure: true },
           decolorize: true,
         }),
-        new WinstonBigQuery({
-          level: "warn",
-          create: false,
-          schema: bqLogSchema,
-          dataset: "logs",
-          table: "exceptions",
-        }),
+        // new WinstonBigQuery({
+        //   level: "warn",
+        //   create: false,
+        //   schema: bqLogSchema,
+        //   dataset: "logs",
+        //   table: "exceptions",
+        // }),
         new transports.Console({
           level: "info",
           format: cli(),
@@ -90,13 +98,13 @@ class Logging {
           options: { autoReconnect: false, tlsInsecure: true },
           decolorize: true,
         }),
-        new WinstonBigQuery({
-          level: "info",
-          create: false,
-          schema: bqLogSchema,
-          dataset: "logs",
-          table: "activity",
-        }),
+        // new WinstonBigQuery({
+        //   level: "info",
+        //   create: false,
+        //   schema: bqLogSchema,
+        //   dataset: "logs",
+        //   table: "activity",
+        // }),
       ],
     });
     globalLogger = this.logger;
