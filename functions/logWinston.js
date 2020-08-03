@@ -50,19 +50,17 @@ function logMeta(data = {}) {
 
 class Logging {
   constructor() {
-    debug(
-      "initiate class , env set? :",
-      process.env.GOOGLE_CREDENTIALS.slice(0, 20)
-    );
+    debug("initiate class");
     this.logger = null; // we can not set the logger yet (env not set)
   }
 
   setup() {
-    debug(
-      "setup logger with google creds,  set? : ",
-      process.env.GOOGLE_CREDENTIALS.slice(0, 20)
-    );
-    this.logger = globalLogger|| createLogger({
+    debug("setup logger ");
+    if (globalLogger) {
+      this.logger = globalLogger;
+      return this;
+    }
+    this.logger = createLogger({
       level: "debug",
       format: combine(simple()),
       exceptionHandlers: [
@@ -101,7 +99,8 @@ class Logging {
         }),
       ],
     });
-    globalLogger = this.logger
+    globalLogger = this.logger;
+    return this;
   }
 
   add(level, message, data) {
