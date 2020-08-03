@@ -67,15 +67,10 @@ const logger = createLogger({
   ]
 });
 
-// logger.info("Hello World", {
-//   meta1: 1,
-//   meta2: "string",
-//   meta3: { deepObj: 1 }
-// });
-function LogData(message, data, level = "info") {
+
+function logMeta( data) {
   try {
     const meta = {
-      level,
       NODE_ENV: process.env.NODE_ENV,
       nameSpace: process.env.__OW_NAMESPACE,
       method: process.env.FUNCTION_METHOD,
@@ -83,13 +78,14 @@ function LogData(message, data, level = "info") {
       ...data
     };
 
-    logger.info(message, meta);
+    return meta
   } catch (error) {
     console.error(error);
+    return data
   }
 
   return true;
 }
-exports.LogData = LogData;
+exports.logMeta = logMeta;
 
 exports.logger = logger;
