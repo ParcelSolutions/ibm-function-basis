@@ -39,6 +39,7 @@ function logMeta(data = {}) {
       method: process.env.FUNCTION_METHOD,
       app: process.env.__OW_ACTION_NAME || "OWfunction",
       ...data,
+      metadata: data
     };
     return meta;
   } catch (error) {
