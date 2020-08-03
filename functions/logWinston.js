@@ -2,7 +2,7 @@ const debug = require("debug")("log:winston");
 const _ = require("lodash");
 /* eslint-disable no-underscore-dangle */
 const { createLogger, format, transports } = require("winston");
-
+let globalLogger;
 const {
   combine,
   colorize,
@@ -62,7 +62,7 @@ class Logging {
       "setup logger with google creds,  set? : ",
       process.env.GOOGLE_CREDENTIALS.slice(0, 20)
     );
-    this.logger = createLogger({
+    this.logger = globalLogger|| createLogger({
       level: "debug",
       format: combine(simple()),
       exceptionHandlers: [
@@ -101,6 +101,7 @@ class Logging {
         }),
       ],
     });
+    globalLogger = this.logger
   }
 
   add(level, message, data) {
