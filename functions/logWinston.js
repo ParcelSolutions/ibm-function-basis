@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const { createLogger, format, transports } = require("winston");
-
+const debug = require("debug")("log:winston")
 const {
   combine,
   colorize,
@@ -86,7 +86,8 @@ function logMeta(data = {}) {
   }
 }
 
-function addLogging(level,message, data, error){
+function addLogging(level,message, data){
+  debug("addLogging %o",{level,message, data})
   logger.log(level, message, logMeta(data))
 }
 
