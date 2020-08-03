@@ -1,6 +1,6 @@
 require("dotenv-json")();
 
-const {  addLogging } = require("../index");
+const {  Logging } = require("../index");
 // logger.info("Hello World", {
 //   meta1: 1,
 //   meta2: "string",
@@ -13,20 +13,22 @@ const {  addLogging } = require("../index");
 //   accountId: '3',
 //   target: 'test' 
 // });
-addLogging("info","start app");
-addLogging("info","test1", {
+const logger = new Logging()
+logger.setup()
+logger.add("info","start app");
+logger.add("info","test1", {
   userId: "1",
   accountId: "2",
   target: "test"
 });
 
 
-addLogging("debug","test2", {});
+logger.add("debug","test2", {});
 try{
-  addLogging("warn","test3");
+  logger.add("warn","test3");
   throw Error("test4 error throw");
 }catch(e){
 
-  addLogging("error","test4", {error:e.stack});
+  logger.add("error","test4", {error:e.stack});
 }
 throw Error("test5 winston logging");

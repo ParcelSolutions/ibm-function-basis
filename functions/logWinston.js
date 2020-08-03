@@ -1,6 +1,8 @@
+
+const debug = require("debug")("log:winston");
 /* eslint-disable no-underscore-dangle */
 const { createLogger, format, transports } = require("winston");
-const debug = require("debug")("log:winston")
+
 const {
   combine,
   colorize,
@@ -28,57 +30,16 @@ const bqLogSchema = {
   method: "string",
   app: "string",
 };
-const logger = createLogger({
-  level: "debug",
-  format: combine(simple()),
-  exceptionHandlers: [
-    // new transports.MongoDB({
-    //   level: "error",
-    //   db: process.env.MONGO_URI_TEST,
-    //   collection: "logs.exceptions",
-    //   options: { autoReconnect: false },
-    //   decolorize: true
-    // }),
-    new WinstonBigQuery({
-      level: "warn",
-      create: false,
-      schema: bqLogSchema,
-      dataset: "logs",
-      table: "exceptions",
-    }),
-    new transports.Console({
-      level: "info",
-      format: cli(),
-    }),
-  ],
-  transports: [
-    // new transports.MongoDB({
-    //   db: process.env.MONGO_URI_TEST,
-    //   collection: "logs.activity",
-    //   options: { autoReconnect: false },
-    //   decolorize: true
-    // }),
-    new WinstonBigQuery({
-      level: "info",
-      create: false,
-      schema: bqLogSchema,
-      dataset: "logs",
-      table: "activity",
-    }),
-  ],
-});
 
 function logMeta(data = {}) {
   try {
     const meta = {
-      
       NODE_ENV: process.env.NODE_ENV,
       nameSpace: process.env.__OW_NAMESPACE,
       method: process.env.FUNCTION_METHOD,
       app: process.env.__OW_ACTION_NAME || "OWfunction",
-      ...data
+      ...data,
     };
-
     return meta;
   } catch (error) {
     console.error("error when trying to build error obj", error);
@@ -86,10 +47,59 @@ function logMeta(data = {}) {
   }
 }
 
-function addLogging(level,message, data){
-  debug("addLogging %o",{level,message, data})
-  logger.log(level, message, logMeta(data))
+class Logging {
+  constructor() {
+    this.logger = null;// we can not set the logger yet (env not set)
+  }
+
+
+  setup() {
+    this.logger = createLogger({
+      level: "debug",
+      format: combine(simple()),
+      exceptionHandlers: [
+        // new transports.MongoDB({
+        //   level: "error",
+        //   db: process.env.MONGO_URI_TEST,
+        //   collection: "logs.exceptions",
+        //   options: { autoReconnect: false },
+        //   decolorize: true
+        // }),
+        new WinstonBigQuery({
+          level: "warn",
+          create: false,
+          schema: bqLogSchema,
+          dataset: "logs",
+          table: "exceptions",
+        }),
+        new transports.Console({
+          level: "info",
+          format: cli(),
+        }),
+      ],
+      transports: [
+        // new transports.MongoDB({
+        //   db: process.env.MONGO_URI_TEST,
+        //   collection: "logs.activity",
+        //   options: { autoReconnect: false },
+        //   decolorize: true
+        // }),
+        new WinstonBigQuery({
+          level: "info",
+          create: false,
+          schema: bqLogSchema,
+          dataset: "logs",
+          table: "activity",
+        }),
+      ],
+    });
+  }
+
+  add(level, message, data) {
+    debug("addLogging %o", { level, message, data });
+    this.logger.log(level, message, logMeta(data));
+  }
 }
 
-exports.logger = logger;
-exports.addLogging = addLogging;
+exports.Logging = Logging;
+
