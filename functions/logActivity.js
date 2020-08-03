@@ -22,5 +22,5 @@ module.exports = async function logActivity({
     throw new Error("connection link to db not defined!");
   }
 
-  mongoConn.createActivity({ userId, accountId, activity, data });
+  return mongoConn.createActivity({ userId, accountId, activity, data });
 };

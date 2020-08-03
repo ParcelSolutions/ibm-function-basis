@@ -396,7 +396,6 @@ exports.MongoConnection = class MongoConnection {
       if (!userId || !activity || !accountId) {
         resolve(null);
       }
-
       conn
         .db()
         .collection("users.activity")
