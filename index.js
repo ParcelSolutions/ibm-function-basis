@@ -7,7 +7,7 @@ const { logError } = require("./functions/sentryLogging");
 const closeConnections = require("./functions/closeConnections");
 const { ibmFunctionCall } = require("./functions/ibmFunctionCall");
 const { decodeBase64, checkAllParams } = require("./functions/utils");
-const { logActivity } = require("./functions/logActivity");
+const logActivity = require("./functions/logActivity");
 
 exports.createdDT = createdDT;
 exports.MongoConnection = MongoConnection;
