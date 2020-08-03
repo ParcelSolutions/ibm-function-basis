@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { createLogger, format, transports } = require("winston");
 
 const {
@@ -71,5 +72,24 @@ const logger = createLogger({
 //   meta2: "string",
 //   meta3: { deepObj: 1 }
 // });
+function LogData(message, data, level = "info") {
+  try {
+    const meta = {
+      level,
+      NODE_ENV: process.env.NODE_ENV,
+      nameSpace: process.env.__OW_NAMESPACE,
+      method: process.env.FUNCTION_METHOD,
+      app: process.env.__OW_ACTION_NAME || "OWfunction",
+      ...data
+    };
+
+    logger.info(message, meta);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return true;
+}
+exports.LogData = LogData;
 
 exports.logger = logger;
