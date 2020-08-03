@@ -54,6 +54,7 @@ class Logging {
 
 
   setup() {
+    debug("google creds set? : " , process.env.GOOGLE_CREDENTIALS.slice(0,20))
     this.logger = createLogger({
       level: "debug",
       format: combine(simple()),
