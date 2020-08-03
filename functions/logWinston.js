@@ -60,13 +60,13 @@ class Logging {
       level: "debug",
       format: combine(simple()),
       exceptionHandlers: [
-        // new transports.MongoDB({
-        //   level: "error",
-        //   db: process.env.MONGO_URI_TEST,
-        //   collection: "logs.exceptions",
-        //   options: { autoReconnect: false },
-        //   decolorize: true
-        // }),
+        new transports.MongoDB({
+          level: "error",
+          db: process.env.MONGO_URI_TEST,
+          collection: "logs.exceptions",
+          options: { autoReconnect: false, tlsInsecure:true},
+          decolorize: true
+        }),
         new WinstonBigQuery({
           level: "warn",
           create: false,
@@ -80,12 +80,12 @@ class Logging {
         }),
       ],
       transports: [
-        // new transports.MongoDB({
-        //   db: process.env.MONGO_URI_TEST,
-        //   collection: "logs.activity",
-        //   options: { autoReconnect: false },
-        //   decolorize: true
-        // }),
+        new transports.MongoDB({
+          db: process.env.MONGO_URI_TEST,
+          collection: "logs.activity",
+          options: { autoReconnect: false,tlsInsecure:true },
+          decolorize: true
+        }),
         new WinstonBigQuery({
           level: "info",
           create: false,
