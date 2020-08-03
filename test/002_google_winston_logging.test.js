@@ -14,7 +14,7 @@ const { logger, logMeta } = require("../index");
 //   target: 'test' 
 // });
 logger.info("start app");
-logger.info("shipment.created", {
+logger.info("test1", {
   userId: "1",
   accountId: "2",
   target: "test"
@@ -25,7 +25,12 @@ const meta = logMeta({
   target: "test",
   newKey:"error"
 })
-console.log("meta" , meta)
-logger.error("shipment.created", meta);
 
-throw Error("test winston logging");
+logger.error("test2", meta);
+try{
+  logger.error("test3", meta);
+  throw Error("test4 error throw");
+}catch(e){
+  logger.error("test4", e);
+}
+//throw Error("test5 winston logging");

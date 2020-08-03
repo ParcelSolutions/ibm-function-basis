@@ -9,7 +9,7 @@ const {
   printf,
   cli,
   prettyPrint,
-  simple
+  simple,
 } = format;
 const { WinstonBigQuery } = require("winston-bigquery");
 require("winston-mongodb");
@@ -26,7 +26,7 @@ const bqLogSchema = {
   NODE_ENV: "string",
   nameSpace: "string",
   method: "string",
-  app: "string"
+  app: "string",
 };
 const logger = createLogger({
   level: "debug",
@@ -44,12 +44,12 @@ const logger = createLogger({
       create: false,
       schema: bqLogSchema,
       dataset: "logs",
-      table: "exceptions"
+      table: "exceptions",
     }),
     new transports.Console({
       level: "info",
-      format: cli()
-    })
+      format: cli(),
+    }),
   ],
   transports: [
     // new transports.MongoDB({
@@ -59,34 +59,30 @@ const logger = createLogger({
     //   decolorize: true
     // }),
     new WinstonBigQuery({
-      level: 'info',
+      level: "info",
       create: false,
       schema: bqLogSchema,
       dataset: "logs",
-      table: "activity"
-    })
-  ]
+      table: "activity",
+    }),
+  ],
 });
 
-
-function logMeta( data) {
+function logMeta(data = {}) {
   try {
     const meta = {
       NODE_ENV: process.env.NODE_ENV,
       nameSpace: process.env.__OW_NAMESPACE,
       method: process.env.FUNCTION_METHOD,
       app: process.env.__OW_ACTION_NAME || "OWfunction",
-      ...data
+      ...data,
     };
 
-    return meta
+    return meta;
   } catch (error) {
-    console.error(error);
-    return data
+    console.error("error when trying to build error", error);
+    return data;
   }
-
-  return true;
 }
 exports.logMeta = logMeta;
-
 exports.logger = logger;
