@@ -71,18 +71,24 @@ const logger = createLogger({
 function logMeta(data = {}) {
   try {
     const meta = {
+      
       NODE_ENV: process.env.NODE_ENV,
       nameSpace: process.env.__OW_NAMESPACE,
       method: process.env.FUNCTION_METHOD,
       app: process.env.__OW_ACTION_NAME || "OWfunction",
-      ...data,
+      ...data
     };
 
     return meta;
   } catch (error) {
-    console.error("error when trying to build error", error);
+    console.error("error when trying to build error obj", error);
     return data;
   }
 }
-exports.logMeta = logMeta;
+
+function addLogging(level,message, data, error){
+  logger.log(level, message, logMeta(data))
+}
+
 exports.logger = logger;
+exports.addLogging = addLogging;

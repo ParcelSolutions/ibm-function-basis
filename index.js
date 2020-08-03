@@ -9,7 +9,7 @@ const closeConnections = require("./functions/closeConnections");
 const { ibmFunctionCall } = require("./functions/ibmFunctionCall");
 const { decodeBase64, checkAllParams } = require("./functions/utils");
 const logActivity = require("./functions/logActivity");
-const { logger, logMeta } = require("./functions/logWinston");
+const { logger, addLogging } = require("./functions/logWinston");
 
 exports.createdDT = createdDT;
 exports.MongoConnection = MongoConnection;
@@ -26,4 +26,4 @@ exports.decodeBase64 = decodeBase64;
 exports.checkAllParams = checkAllParams;
 exports.logActivity = logActivity;
 exports.logger = logger;
-exports.logMeta = logMeta;
+exports.addLogging = addLogging;
