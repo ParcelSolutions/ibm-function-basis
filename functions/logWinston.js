@@ -2,6 +2,7 @@ const debug = require("debug")("log:winston");
 const _ = require("lodash");
 /* eslint-disable no-underscore-dangle */
 const { createLogger, format, transports } = require("winston");
+
 let globalLogger;
 const {
   combine,
@@ -11,7 +12,7 @@ const {
   printf,
   cli,
   prettyPrint,
-  simple,
+  simple
 } = format;
 
 require("winston-mongodb");
@@ -23,12 +24,12 @@ function logMeta(data = {}) {
       nameSpace: process.env.__OW_NAMESPACE,
       method: process.env.FUNCTION_METHOD,
       app: process.env.__OW_ACTION_NAME || "OWfunction",
-      ...data,
+      ...data
     };
-    return {  metadata: meta };
+    return { metadata: meta };
   } catch (error) {
     console.error("error when trying to build error obj", error);
-    return {  metadata: data };
+    return { metadata: data };
   }
 }
 
@@ -49,7 +50,7 @@ class Logging {
       format: combine(
         format.combine(
           format.timestamp({
-            format: "YYYY-MM-DD HH:mm:ss",
+            format: "YYYY-MM-DD HH:mm:ss"
           }),
           format.errors({ stack: true }),
           format.json()
@@ -61,23 +62,22 @@ class Logging {
           db: process.env.MONGO_URI_TEST,
           collection: "logs.exceptions",
           options: { autoReconnect: false, tlsInsecure: true },
-          decolorize: true,
+          decolorize: true
         }),
-        
+
         new transports.Console({
           level: "info",
-          format: cli(),
-        }),
+          format: cli()
+        })
       ],
       transports: [
         new transports.MongoDB({
           db: process.env.MONGO_URI_TEST,
           collection: "logs.activity",
           options: { autoReconnect: false, tlsInsecure: true },
-          decolorize: true,
-        }),
-       
-      ],
+          decolorize: true
+        })
+      ]
     });
     globalLogger = this.logger;
     return this;

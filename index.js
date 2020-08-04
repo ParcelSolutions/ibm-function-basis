@@ -26,4 +26,3 @@ exports.decodeBase64 = decodeBase64;
 exports.checkAllParams = checkAllParams;
 exports.logActivity = logActivity;
 exports.Logging = Logging;
-
