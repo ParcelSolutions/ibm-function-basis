@@ -13,7 +13,7 @@ const {
   prettyPrint,
   simple,
 } = format;
-const { WinstonBigQuery } = require("winston-bigquery");
+//const { WinstonBigQuery } = require("winston-bigquery");
 require("winston-mongodb");
 // NODE_ENV: process.env.NODE_ENV,
 // nameSpace: process.env.__OW_NAMESPACE,
