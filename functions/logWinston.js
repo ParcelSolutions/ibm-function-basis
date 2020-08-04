@@ -13,23 +13,8 @@ const {
   prettyPrint,
   simple,
 } = format;
-//const { WinstonBigQuery } = require("winston-bigquery");
-require("winston-mongodb");
-// NODE_ENV: process.env.NODE_ENV,
-// nameSpace: process.env.__OW_NAMESPACE,
-// method: process.env.FUNCTION_METHOD,
-// app: process.env.__OW_ACTION_NAME || "OWfunction",
 
-const bqLogSchema = {
-  target: "string",
-  accountId: "string",
-  userId: "string",
-  activity: "string",
-  NODE_ENV: "string",
-  nameSpace: "string",
-  method: "string",
-  app: "string",
-};
+require("winston-mongodb");
 
 function logMeta(data = {}) {
   try {
@@ -40,11 +25,10 @@ function logMeta(data = {}) {
       app: process.env.__OW_ACTION_NAME || "OWfunction",
       ...data,
     };
-    const keyData = _.pick(meta, Object.keys(bqLogSchema));
-    return { ...keyData, metadata: meta };
+    return {  metadata: meta };
   } catch (error) {
     console.error("error when trying to build error obj", error);
-    return data;
+    return {  metadata: data };
   }
 }
 
@@ -79,13 +63,7 @@ class Logging {
           options: { autoReconnect: false, tlsInsecure: true },
           decolorize: true,
         }),
-        // new WinstonBigQuery({
-        //   level: "warn",
-        //   create: false,
-        //   schema: bqLogSchema,
-        //   dataset: "logs",
-        //   table: "exceptions",
-        // }),
+        
         new transports.Console({
           level: "info",
           format: cli(),
@@ -98,13 +76,7 @@ class Logging {
           options: { autoReconnect: false, tlsInsecure: true },
           decolorize: true,
         }),
-        // new WinstonBigQuery({
-        //   level: "info",
-        //   create: false,
-        //   schema: bqLogSchema,
-        //   dataset: "logs",
-        //   table: "activity",
-        // }),
+       
       ],
     });
     globalLogger = this.logger;
