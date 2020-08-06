@@ -143,8 +143,10 @@ exports.MongoConnection = class MongoConnection {
       ids.length,
       forDeletion.length
     );
-
-    uniqueIds[this.uri] = ids.filter(id => !forDeletion.includes(id));
+    // use set to make list unique
+    uniqueIds[this.uri] = [...new Set(ids)].filter(
+      id => !forDeletion.includes(id)
+    );
     debug("ids %o", uniqueIds[this.uri]);
     return uniqueIds[this.uri];
   }
