@@ -13,25 +13,29 @@ const { Logging } = require("../index");
 //   accountId: '3',
 //   target: 'test'
 // });
-const logger = new Logging();
-logger.setup();
-logger.add("info", "start app");
-logger.add("info", "test1", {
-  userId: "1",
-  accountId: "2",
-  target: "test"
-});
+describe("logging", function() {
+  it("test logging", async function() {
+    const logger = new Logging();
+    logger.setup();
+    logger.add("info", "start app");
+    logger.add("info", "test1", {
+      userId: "1",
+      accountId: "2",
+      target: "test",
+    });
 
-logger.add("debug", "test2", {});
-try {
-  logger.add("warn", "test3", {
-    userId: "1",
-    accountId: "2",
-    target: "test",
-    extra: "extra data"
+    logger.add("debug", "test2", {});
+    try {
+      logger.add("warn", "test3", {
+        userId: "1",
+        accountId: "2",
+        target: "test",
+        extra: "extra data",
+      });
+      throw Error("test4 error throw");
+    } catch (e) {
+      logger.add("error", "test4", { error: e.stack });
+    }
+    throw Error("test5 winston logging");
   });
-  throw Error("test4 error throw");
-} catch (e) {
-  logger.add("error", "test4", { error: e.stack });
-}
-throw Error("test5 winston logging");
+});

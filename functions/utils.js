@@ -29,3 +29,9 @@ exports.checkAllParams = object => {
     );
   }
 };
+
+exports.numberToString=(number)=>{
+  const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const pos = number %25 ;
+  return letters[Math.round(pos)]
+}

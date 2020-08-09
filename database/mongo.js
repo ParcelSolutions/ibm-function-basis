@@ -6,6 +6,13 @@ const { MongoClient } = require("mongodb");
 const debug = require("debug")("mongo");
 const MeteorRandom = require("meteor-random");
 const { to } = require("await-to-js");
+const { numberToString } = require("../functions/utils.js");
+const allCapsAlpha = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"]; 
+let shortRefDuplicatesDetected = false;
+
+// store last 10000 generated ids
+const lastIds=Array.from(Array(10000))
+let lastIdPos =0;
 
 const mongoConnection = {};
 const uniqueIds = {};
@@ -22,7 +29,7 @@ function createdDT(userId) {
   return {
     by: userId || "function",
     at: new Date(),
-    atms: Date.now()
+    atms: Date.now(),
   };
 }
 
@@ -45,7 +52,7 @@ exports.MongoConnection = class MongoConnection {
       poolSize: 5,
       bufferMaxEntries: 0,
       connectTimeoutMS: 5000,
-      autoReconnect: false
+      autoReconnect: false,
     };
 
     this.uri = uri;
@@ -122,7 +129,7 @@ exports.MongoConnection = class MongoConnection {
       "items",
       "invoices",
       "invoices.items",
-      "addresses"
+      "addresses",
     ]
   ) {
     const ids = [];
@@ -130,13 +137,15 @@ exports.MongoConnection = class MongoConnection {
       ids.push(MeteorRandom.id());
     }
     const results = await Promise.all(
-      collections.map(collection =>
+      collections.map((collection) =>
         this.find(collection, { _id: { $in: ids } }, { _id: 1 })
       )
     );
     const forDeletion = [];
     debug("result from db %o", results);
-    results.forEach(result => result.forEach(obj => forDeletion.push(obj._id)));
+    results.forEach((result) =>
+      result.forEach((obj) => forDeletion.push(obj._id))
+    );
     debug("result forDeletion db %o", forDeletion);
     debug(
       "lookup on ids : %o, rejected qty : %o",
@@ -145,7 +154,7 @@ exports.MongoConnection = class MongoConnection {
     );
     // use set to make list unique
     uniqueIds[this.uri] = [...new Set(ids)].filter(
-      id => !forDeletion.includes(id)
+      (id) => !forDeletion.includes(id)
     );
     debug("ids %o", uniqueIds[this.uri]);
     return uniqueIds[this.uri];
@@ -200,7 +209,7 @@ exports.MongoConnection = class MongoConnection {
   }
 
   async insertMany(collection, array) {
-    const insertManyArray = array.map(obj => {
+    const insertManyArray = array.map((obj) => {
       if (!obj.created) {
         // eslint-disable-next-line no-param-reassign
         obj.created = createdDT("function");
@@ -390,7 +399,7 @@ exports.MongoConnection = class MongoConnection {
       userId,
       accountId,
       activity,
-      data
+      data,
     });
     const [error, conn] = await to(this.connect());
     if (error) throw error;
@@ -418,6 +427,55 @@ exports.MongoConnection = class MongoConnection {
           }
         );
     });
+  }
+
+  generator  ( len) {
+    return [...Array(len)]
+      .map(i => allCapsAlpha [Math.random()*allCapsAlpha .length|0])
+      .join('');
+ };
+ 
+
+  async getUniqueId({ table, key, type }) {
+    let id;
+    let obj = true;
+   
+    try {
+      do {
+        switch (type) {
+          case "meteorId": {
+            id = MeteorRandom.id();
+            break;
+          }
+          case "shortRef": {
+            if (shortRefDuplicatesDetected) {
+              id = this.generator(7);
+            } else {
+              const d = new Date();
+              id =
+                numberToString(d.getFullYear()) +
+                numberToString(d.getMonth()) +
+                numberToString(d.getDate()) +
+                this.generator(3)
+            }
+            break;
+          }
+          
+
+          default:
+            throw Error("type not existing:" + type);
+        }
+        // eslint-disable-next-line no-await-in-loop
+        obj = await this.findOne(table, { [key]: id }, { _id: 1 });
+        // if shortRefNew and duplicate, switch to full random shortRef
+      } while (lastIds.includes(id)|| obj); // continue when result is given (means it exists)
+    } catch (err) {
+      console.error(err);
+      throw Error("issue when generating unique id");
+    }
+    lastIds[lastIdPos]=id;
+    lastIdPos===9999?lastIdPos=0:lastIdPos+=1;
+    return id;
   }
 
   async generateAccountId(type = "carrier") {
