@@ -7,7 +7,7 @@ const debug = require("debug")("test:generateIds");
 const { MongoConnection, createdDT } = require("../../ibm-function-basis");
 // gets the global main function
 
-describe.only("getId", function() {
+describe("getId", function() {
   it("test is we get an id", async function() {
     this.timeout(20000);
     let mongo;
@@ -50,7 +50,7 @@ describe.only("getId", function() {
     } catch (e) {
       throw new Error("no connection to db!");
     }
-    const longArray = Array.from(Array(1000));
+    const longArray = Array.from(Array(100));
     debug("elements %o", longArray.length);
     const results = await Promise.all(
       longArray.map(async (_) => {

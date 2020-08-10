@@ -466,9 +466,10 @@ exports.MongoConnection = class MongoConnection {
             throw Error("type not existing:" + type);
         }
         // eslint-disable-next-line no-await-in-loop
-        obj = await this.findOne(table, { [key]: id }, { _id: 1 });
+        obj = lastIds.includes(id) || await this.findOne(table, { [key]: id }, { _id: 1 });
+        if(obj) shortRefDuplicatesDetected = true;
         // if shortRefNew and duplicate, switch to full random shortRef
-      } while (lastIds.includes(id)|| obj); // continue when result is given (means it exists)
+      } while (obj); // continue when result is given (means it exists)
     } catch (err) {
       console.error(err);
       throw Error("issue when generating unique id");

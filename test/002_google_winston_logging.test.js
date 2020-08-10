@@ -1,6 +1,8 @@
 require("dotenv-json")();
 
 const { Logging } = require("../index");
+let logger;
+
 // logger.info("Hello World", {
 //   meta1: 1,
 //   meta2: "string",
@@ -13,10 +15,16 @@ const { Logging } = require("../index");
 //   accountId: '3',
 //   target: 'test'
 // });
-describe("logging", function() {
-  it("test logging", async function() {
-    const logger = new Logging();
+describe("logging", function() { 
+
+  before( function() {
+    logger = new Logging();
     logger.setup();
+    
+  });
+  it("test logging", async function() {
+   
+   
     logger.add("info", "start app");
     logger.add("info", "test1", {
       userId: "1",
@@ -36,6 +44,6 @@ describe("logging", function() {
     } catch (e) {
       logger.add("error", "test4", { error: e.stack });
     }
-    throw Error("test5 winston logging");
+   //throw Error("test5 winston logging");
   });
 });
