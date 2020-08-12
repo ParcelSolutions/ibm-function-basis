@@ -3,7 +3,7 @@ const PostgresConnection = require("../database/postgress");
 const RedisConnection = require("../database/redis");
 
 module.exports = async function closeConnections(mongoUri) {
-  const mongo = new MongoConnection();
+  const mongo = new MongoConnection(mongoUri);
 
   await Promise.all([
     mongo.close(mongoUri),
