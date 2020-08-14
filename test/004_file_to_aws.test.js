@@ -3,7 +3,13 @@ require("dotenv-json")();
 const { expect } = require("chai");
 const debug = require("debug")("test:store-file");
 const { resolve } = require("path");
-const { uploadFileToAws } = require("../functions/storeFiles");
+
+let uploadFileToAws;
+if (process.env.WEBPACK_TEST) {
+  ({ uploadFileToAws } = require("../dist/bundle-local"));
+} else {
+  ({ uploadFileToAws } = require("../functions/storeFiles"));
+}
 
 describe("store pdf", function() {
   it("upload to aws", async function() {

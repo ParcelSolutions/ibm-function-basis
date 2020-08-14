@@ -1,7 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = !process.env.WEBPACK_TEST;
 
 const plugins = [
   new webpack.ContextReplacementPlugin(/.*/),
@@ -11,14 +11,16 @@ const plugins = [
 ];
 
 module.exports = {
-  optimization: { minimize: isProduction },
+  optimization: { minimize: true },
   entry: process.env.ENTRY_FILE,
   plugins,
   output: {
-    path: path.resolve(__dirname, "../dist"),
-    filename: `bundle${isProduction ? "" : "-local"}.js`
+    path: path.resolve(__dirname, "./dist"),
+    filename: `bundle${process.env.WEBPACK_TEST ? "-local" : ""}.js`,
+    libraryTarget: process.env.WEBPACK_TEST ? "umd" : undefined
   },
   mode: "production",
+
   module: {
     rules: [
       {
@@ -35,7 +37,8 @@ module.exports = {
     __dirname: true
   },
   externals: {},
-  target: "node"
+  target: "node",
+  devtool: process.env.WEBPACK_TEST ? "source-map" : ""
 };
 const installedModules = [
   "amqplib",
@@ -103,7 +106,7 @@ const installedModules = [
   "xmlhttprequest",
   "yauzl"
 ];
-if (isProduction) {
+if (!process.env.WEBPACK_TEST) {
   console.log("prepare file for production env!");
   installedModules.forEach(
     nodeModule =>

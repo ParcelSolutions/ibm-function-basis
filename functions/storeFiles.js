@@ -3,6 +3,7 @@ const debug = require("debug")("aws");
 const fs = require("fs");
 const path = require("path");
 const AWS = require("aws-sdk");
+const { v4: uuidv4 } = require('uuid');
 // Set the region
 AWS.config.update({
   region: process.env.AWS_DEFAULT_REGION,
@@ -26,13 +27,11 @@ s3.listBuckets(err => {
 exports.uploadFileToAws = async filePath => {
   // configuring parameters
   let stored;
-  const randomString = Math.random()
-    .toString(36)
-    .substring(2, 10);
+  
   const params = {
     Bucket: process.env.AWS_S3_BUCKET,
     Body: fs.createReadStream(filePath),
-    Key: `${Date.now()}_${randomString}_${path.basename(filePath)}`,
+    Key: `${Date.now()}_${uuidv4()}_${path.basename(filePath)}`,
     ACL: "public-read"
   };
   try {

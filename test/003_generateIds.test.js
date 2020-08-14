@@ -4,8 +4,12 @@ require("dotenv-json")();
 const { expect } = require("chai");
 const debug = require("debug")("test:generateIds");
 
-const { MongoConnection, createdDT } = require("../../ibm-function-basis");
-// gets the global main function
+let MongoConnection;
+if (process.env.WEBPACK_TEST) {
+  ({ MongoConnection } = require("../dist/bundle-local"));
+} else {
+  ({ MongoConnection } = require("../index"));
+}
 
 describe("getId", function() {
   it("test is we get an id", async function() {
@@ -35,7 +39,7 @@ describe("getId", function() {
     const result = mongo.getUniqueId({
       table: "shipments",
       key: "number",
-      type: "shortRef",
+      type: "shortRef"
     });
     const id = await result;
     debug("refNumber", { id });
@@ -53,13 +57,12 @@ describe("getId", function() {
     const longArray = Array.from(Array(100));
     debug("elements %o", longArray.length);
     const results = await Promise.all(
-      longArray.map(async (_) => {
-        
+      longArray.map(async _ => {
         try {
           const result = mongo.getUniqueId({
             table: "shipments",
             key: "number",
-            type: "shortRef",
+            type: "shortRef"
           });
 
           return result;
@@ -69,7 +72,7 @@ describe("getId", function() {
         }
       })
     );
-    results.forEach((id) => {
+    results.forEach(id => {
       debug("refNumber", { id });
       expect(id).to.be.a("string");
     });

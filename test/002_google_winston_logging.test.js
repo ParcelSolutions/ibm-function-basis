@@ -1,6 +1,12 @@
 require("dotenv-json")();
 
-const { Logging } = require("../index");
+let Logging;
+if (process.env.WEBPACK_TEST) {
+  ({ Logging } = require("../dist/bundle-local"));
+} else {
+  ({ Logging } = require("../index"));
+}
+
 let logger;
 
 // logger.info("Hello World", {
@@ -15,21 +21,17 @@ let logger;
 //   accountId: '3',
 //   target: 'test'
 // });
-describe("logging", function() { 
-
-  before( function() {
+describe("logging", function() {
+  before(function() {
     logger = new Logging();
     logger.setup();
-    
   });
   it("test logging", async function() {
-   
-   
     logger.add("info", "start app");
     logger.add("info", "test1", {
       userId: "1",
       accountId: "2",
-      target: "test",
+      target: "test"
     });
 
     logger.add("debug", "test2", {});
@@ -38,12 +40,12 @@ describe("logging", function() {
         userId: "1",
         accountId: "2",
         target: "test",
-        extra: "extra data",
+        extra: "extra data"
       });
       throw Error("test4 error throw");
     } catch (e) {
       logger.add("error", "test4", { error: e.stack });
     }
-   //throw Error("test5 winston logging");
+    // throw Error("test5 winston logging");
   });
 });

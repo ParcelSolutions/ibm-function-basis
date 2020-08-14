@@ -3,10 +3,14 @@
 const { expect } = require("chai");
 const debug = require("debug")("test:localhost error mng");
 // gets the global main function
+let functionsToTest;
+if (process.env.WEBPACK_TEST) {
+  functionsToTest = require("../dist/bundle-local");
+} else {
+  functionsToTest = require("../index");
+}
 
-const { MongoConnection } = require("../index");
-require("../index");
-
+const { MongoConnection } = functionsToTest;
 describe("main-schema", function() {
   it("test localhost on prod", async function() {
     process.env.__OW_ACTIVATION_ID = "runID";
