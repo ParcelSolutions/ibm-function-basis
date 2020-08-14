@@ -1,8 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const isProduction = !process.env.WEBPACK_TEST;
-
 const plugins = [
   new webpack.ContextReplacementPlugin(/.*/),
   new webpack.IgnorePlugin(/^pg-native$/),
@@ -109,6 +107,7 @@ const installedModules = [
 if (!process.env.WEBPACK_TEST) {
   console.log("prepare file for production env!");
   installedModules.forEach(
+    // eslint-disable-next-line no-return-assign
     nodeModule =>
       (module.exports.externals[nodeModule] = `commonjs ${nodeModule}`)
   ); // don't bundle externals; leave as require('module')
