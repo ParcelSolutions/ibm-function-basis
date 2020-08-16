@@ -3,7 +3,7 @@ const debug = require("debug")("aws");
 const fs = require("fs");
 const path = require("path");
 const AWS = require("aws-sdk");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 // Set the region
 AWS.config.update({
   region: process.env.AWS_DEFAULT_REGION,
@@ -24,14 +24,19 @@ s3.listBuckets(err => {
   }
 }); */
 
-exports.uploadFileToAws = async filePath => {
+exports.uploadFileToAws = async (filePath, generateUniqueFileName = false) => {
   // configuring parameters
+  if (typeof filePath !== "string")
+    throw Error("filePath should be a valid string");
   let stored;
-  
+  let awsFileName = path.basename(filePath);
+  if (generateUniqueFileName) {
+    awsFileName = `${Date.now()}_${uuidv4()}_${path.basename(filePath)}`;
+  }
   const params = {
     Bucket: process.env.AWS_S3_BUCKET,
     Body: fs.createReadStream(filePath),
-    Key: `${Date.now()}_${uuidv4()}_${path.basename(filePath)}`,
+    Key: awsFileName,
     ACL: "public-read"
   };
   try {
