@@ -17,8 +17,40 @@ describe("store pdf", function() {
     const path = resolve("./test/test_data/test-invoice-transmate.pdf");
     debug("use file :", path);
     const result = await uploadFileToAws(path);
-    debug("html %o", result);
+    debug("aws result %o", result);
     expect(result).to.be.a("object");
     expect(result.Location).to.be.a("string");
+    expect(result.Location).to.equal(
+      "https://ondemandreports.s3.amazonaws.com/test-invoice-transmate.pdf"
+    );
+  });
+
+  it("upload to aws unique filename", async function() {
+    // create template without data
+    const path = resolve("./test/test_data/test-invoice-transmate.pdf");
+    debug("use file :", path);
+    const result = await uploadFileToAws(path, {
+      generateUniqueFileName: true
+    });
+    debug("aws result %o", result);
+    expect(result).to.be.a("object");
+    expect(result.Location).to.be.a("string");
+    expect(result.Location).includes("_test-invoice-transmate.pdf");
+  });
+
+  it("upload to aws specific bucket", async function() {
+    // create template without data
+    const path = resolve("./test/test_data/test-invoice-transmate.pdf");
+    debug("use file :", path);
+    const result = await uploadFileToAws(path, {
+      Key: "documents/shipment/test/test",
+      Bucket: "files.transmate.eu"
+    });
+    debug("aws result %o", result);
+    expect(result).to.be.a("object");
+    expect(result.Location).to.be.a("string");
+    expect(result.Location).includes(
+      "files.transmate.eu/documents/shipment/test/test"
+    );
   });
 });

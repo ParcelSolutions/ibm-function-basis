@@ -24,19 +24,29 @@ s3.listBuckets(err => {
   }
 }); */
 
-exports.uploadFileToAws = async (filePath, generateUniqueFileName = false) => {
+exports.uploadFileToAws = async (
+  filePath,
+  options = {
+    generateUniqueFileName: false,
+    Bucket: undefined,
+    Key: undefined
+  }
+) => {
   // configuring parameters
   if (typeof filePath !== "string")
     throw Error("filePath should be a valid string");
+  if (typeof options !== "object")
+    throw Error("options should be a valid object");
+
   let stored;
   let awsFileName = path.basename(filePath);
-  if (generateUniqueFileName) {
+  if (options.generateUniqueFileName) {
     awsFileName = `${Date.now()}_${uuidv4()}_${path.basename(filePath)}`;
   }
   const params = {
-    Bucket: process.env.AWS_S3_BUCKET,
+    Bucket: options.Bucket || process.env.AWS_S3_BUCKET,
     Body: fs.createReadStream(filePath),
-    Key: awsFileName,
+    Key: options.Key || awsFileName,
     ACL: "public-read"
   };
   try {
