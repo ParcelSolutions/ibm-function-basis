@@ -7,9 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "export DEBUG='test*,index' NODE_ENV='development' && mocha --exit || true ",
+    "test": "export DEBUG='test*,index' NODE_ENV='development' && mocha --exit ",
     "release": "release-flow start && release-flow publish && release-flow finish",
-    "buildwebpacktest": "export ENTRY_FILE='./index.js' WEBPACK_TEST=true  && webpack --config webpack.config.js && mocha --require source-map-support/register --exit || true",
+    "buildwebpacktest": "export ENTRY_FILE='./index.js' WEBPACK_TEST=true  && webpack --config webpack.config.js && mocha --require source-map-support/register --exit",
     "buildwebpack": "export NODE_ENV='production' && webpack --config webpack.config.js",
     "create": "ibmcloud fn action create ibm-function-basis dist/bundle.js --kind nodejs:10",
     "deploy": "export NODE_ENV='production' && webpack --config webpack.config.js && ibmcloud fn action update ibm-function-basis dist/bundle.js --kind nodejs:10 --web true --web-secure ZaAx8K5KF4j2hEJxc3xsGmdzqBd5ra --param-file .env.json"
