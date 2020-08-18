@@ -23,7 +23,12 @@ s3.listBuckets(err => {
     // console.log("Success", data.Buckets);
   }
 }); */
-
+function sizeOf(key, bucket) {
+  return s3
+    .headObject({ Key: key, Bucket: bucket })
+    .promise()
+    .then(res => res.ContentLength);
+}
 exports.uploadFileToAws = async (
   filePath,
   options = {
@@ -51,6 +56,7 @@ exports.uploadFileToAws = async (
   };
   try {
     stored = await s3.upload(params).promise();
+    stored.size = await sizeOf(params.Key, params.Bucket);
     debug("Uploaded in:%s, %o", stored.Location, stored);
   } catch (err) {
     console.error(err);
