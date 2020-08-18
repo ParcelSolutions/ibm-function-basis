@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const AWS = require("aws-sdk");
 const { v4: uuidv4 } = require("uuid");
+const mime = require("mime-types");
 // Set the region
 AWS.config.update({
   region: process.env.AWS_DEFAULT_REGION,
@@ -52,7 +53,9 @@ exports.uploadFileToAws = async (
     Bucket: options.Bucket || process.env.AWS_S3_BUCKET,
     Body: fs.createReadStream(filePath),
     Key: options.Key || awsFileName,
-    ACL: "public-read"
+    ACL: "public-read",
+    ContentType: mime.lookup(filePath),
+    ResponseContentDisposition: `inline; filename='${path.basename(filePath)}'`
   };
   try {
     stored = await s3.upload(params).promise();
