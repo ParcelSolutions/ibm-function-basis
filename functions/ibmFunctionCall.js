@@ -28,7 +28,7 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
         }
         debug("response: %o", response.statusCode);
         if (response && response.statusCode !== 200) {
-          console.log("status code not 200:", response.statusCode);
+          debug("status code not 200:", response.statusCode);
         }
         debug("body (ibm function answer) : %j", body);
         resolve({ statusCode: (response || {}).statusCode, body });
