@@ -16,4 +16,4 @@ jobs:
       - name: "fetch"
         run: "git fetch"
       - name: "merge"
-        run: "git merge develop"
+        run: "git merge --no-ff develop"
