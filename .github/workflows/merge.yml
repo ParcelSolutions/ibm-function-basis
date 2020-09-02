@@ -9,7 +9,11 @@ jobs:
     name: "merge to staging"
     runs-on: ubuntu-latest
     steps:
-        - name: "Checkout source code"
-            uses: "actions/checkout@v2"
-        - run: "git checkout -b staging && git fetch"
-        - run: "git merge develop"
+      - name: "Checkout source code"
+          uses: "actions/checkout@v2"
+      - name: "Checkout branch"
+        run: "git checkout -b staging"
+      - name: "fetch"
+        run: "git fetch"
+      - name: "merge"
+        run: "git merge develop"
