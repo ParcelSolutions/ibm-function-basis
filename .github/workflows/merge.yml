@@ -1,0 +1,15 @@
+name: "merge"
+
+on:
+  push:
+    branches:
+      - "develop"
+jobs:
+  merge:
+    name: "merge to staging"
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Checkout source code"
+        uses: "actions/checkout@v2"
+    - run: "git checkout -b staging"
+    - run: "git merge develop"
