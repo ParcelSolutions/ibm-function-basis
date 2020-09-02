@@ -11,5 +11,5 @@ jobs:
     steps:
     - name: "Checkout source code"
         uses: "actions/checkout@v2"
-    - run: "git checkout -b staging"
+    - run: "git checkout -b staging && git fetch"
     - run: "git merge develop"
