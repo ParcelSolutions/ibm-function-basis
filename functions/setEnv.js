@@ -47,6 +47,9 @@ exports.setEnv = (params = {}) => {
 
   if (params.LOGDNA || process.env.LOGDNA)
     process.env.LOGDNA = params.LOGDNA || process.env.LOGDNA;
+
+  if (params.DEBUG || process.env.DEBUG)
+    process.env.DEBUG = params.DEBUG || process.env.DEBUG;
   // google
   if (params.GOOGLE_CREDENTIALS || process.env.GOOGLE_CREDENTIALS)
     process.env.GOOGLE_CREDENTIALS =
