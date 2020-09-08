@@ -1,10 +1,8 @@
 const Sentry = require("@sentry/node");
 const debug = require("debug")("sentryLogging");
-const { LogData } = require("./logDNA");
 
 function logError(e, type, request) {
   try {
-    LogData((e || {}).message, { type, request }, "error");
     if (
       process.env.NODE_ENV !== "development" &&
       process.env.SENTRY_DNS &&
