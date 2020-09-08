@@ -9,7 +9,8 @@ const closeConnections = require("./functions/closeConnections");
 const { ibmFunctionCall } = require("./functions/ibmFunctionCall");
 const { decodeBase64, checkAllParams } = require("./functions/utils");
 const logActivity = require("./functions/logActivity");
-const { Logging } = require("./functions/logWinston");
+const { addLogging } = require("./functions/logFunction");
+
 const { uploadFileToAws } = require("./functions/storeFiles");
 
 exports.createdDT = createdDT;
@@ -26,5 +27,6 @@ exports.ibmFunctionCall = ibmFunctionCall;
 exports.decodeBase64 = decodeBase64;
 exports.checkAllParams = checkAllParams;
 exports.logActivity = logActivity;
-exports.Logging = Logging;
+
 exports.uploadFileToAws = uploadFileToAws;
+exports.addLogging = addLogging;
