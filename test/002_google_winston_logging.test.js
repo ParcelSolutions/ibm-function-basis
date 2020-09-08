@@ -1,13 +1,12 @@
+/* eslint-disable func-names */
 require("dotenv-json")();
 
-let Logging;
+let addLogging;
 if (process.env.WEBPACK_TEST) {
-  ({ Logging } = require("../dist/bundle-local"));
+  ({ addLogging } = require("../dist/bundle-local"));
 } else {
-  ({ Logging } = require("../index"));
+  ({ addLogging } = require("../index"));
 }
-
-let logger;
 
 // logger.info("Hello World", {
 //   meta1: 1,
@@ -23,30 +22,17 @@ let logger;
 // });
 describe("logging", function() {
   before(function() {
-    logger = new Logging();
-    logger.setup();
+    //
   });
+  // eslint-disable-next-line func-names
   it("test logging", async function() {
-    logger.add("info", "start app");
-    logger.add("info", "test1", {
-      userId: "1",
-      accountId: "2",
-      target: "test",
-      dt: new Date()
-    });
+    addLogging({ level: "info", message: "start app" });
 
-    logger.add("debug", "test2", {});
+    addLogging({ level: "debug", message: "test2" });
     try {
-      logger.add("warn", "test3", {
-        userId: "1",
-        accountId: "2",
-        target: "test",
-        extra: "extra data",
-        dt: new Date()
-      });
       throw Error("test4 error throw");
     } catch (e) {
-      logger.add("error", "test4", { error: e.stack });
+      addLogging({ level: "error", message: "test4", error: e.stack });
     }
     // throw Error("test5 winston logging");
   });
