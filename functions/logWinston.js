@@ -15,12 +15,11 @@ const {
   simple
 } = format;
 
-require("winston-mongodb");
-
 function logMeta(data = {}) {
   try {
     const meta = {
       NODE_ENV: process.env.NODE_ENV,
+      DEPLOY_VERSION: process.env.DEPLOY_VERSION,
       nameSpace: process.env.__OW_NAMESPACE,
       method: process.env.FUNCTION_METHOD,
       app: process.env.__OW_ACTION_NAME || "OWfunction",
@@ -45,6 +44,7 @@ class Logging {
       this.logger = globalLogger;
       return this;
     }
+
     this.logger = createLogger({
       level: "info",
       format: combine(
@@ -57,25 +57,15 @@ class Logging {
         )
       ),
       exceptionHandlers: [
-        new transports.MongoDB({
-          level: "error",
-          db: process.env.MONGO_URI_TEST,
-          collection: "logs.exceptions",
-          options: { autoReconnect: false, tlsInsecure: true },
-          decolorize: true
-        }),
-
         new transports.Console({
           level: "info",
           format: cli()
         })
       ],
       transports: [
-        new transports.MongoDB({
-          db: process.env.MONGO_URI_TEST,
-          collection: "logs.activity",
-          options: { autoReconnect: false, tlsInsecure: true },
-          decolorize: true
+        new transports.Console({
+          level: "info",
+          format: cli()
         })
       ]
     });

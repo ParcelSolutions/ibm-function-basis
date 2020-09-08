@@ -31,7 +31,8 @@ describe("logging", function() {
     logger.add("info", "test1", {
       userId: "1",
       accountId: "2",
-      target: "test"
+      target: "test",
+      dt: new Date()
     });
 
     logger.add("debug", "test2", {});
@@ -40,7 +41,8 @@ describe("logging", function() {
         userId: "1",
         accountId: "2",
         target: "test",
-        extra: "extra data"
+        extra: "extra data",
+        dt: new Date()
       });
       throw Error("test4 error throw");
     } catch (e) {
