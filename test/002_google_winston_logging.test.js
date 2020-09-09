@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /* eslint-disable func-names */
 require("dotenv-json")();
 
@@ -21,9 +22,6 @@ if (process.env.WEBPACK_TEST) {
 //   target: 'test'
 // });
 describe("logging", function() {
-  before(function() {
-    //
-  });
   // eslint-disable-next-line func-names
   it("test logging", async function() {
     addLogging({ level: "info", message: "start app" });

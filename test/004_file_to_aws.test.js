@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /* eslint-disable func-names */
 require("dotenv-json")();
 const { expect } = require("chai");

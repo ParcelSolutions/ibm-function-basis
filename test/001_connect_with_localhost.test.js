@@ -1,7 +1,8 @@
+/* eslint-disable global-require */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 const { expect } = require("chai");
-const debug = require("debug")("test:localhost error mng");
+// const debug = require("debug")("test:localhost error mng");
 // gets the global main function
 let functionsToTest;
 if (process.env.WEBPACK_TEST) {
