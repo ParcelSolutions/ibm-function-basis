@@ -428,10 +428,14 @@ exports.MongoConnection = class MongoConnection {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   generator(len) {
-    return [...Array(len)]
-      .map(i => allCapsAlpha[(Math.random() * allCapsAlpha.length) | 0])
-      .join("");
+    return (
+      [...Array(len)]
+        // eslint-disable-next-line no-bitwise
+        .map(() => allCapsAlpha[(Math.random() * allCapsAlpha.length) | 0])
+        .join("")
+    );
   }
 
   async getUniqueId({ table, key, type }) {
@@ -465,6 +469,7 @@ exports.MongoConnection = class MongoConnection {
         // eslint-disable-next-line no-await-in-loop
         obj =
           lastIds.includes(id) ||
+          // eslint-disable-next-line no-await-in-loop
           (await this.findOne(table, { [key]: id }, { _id: 1 }));
         if (obj) shortRefDuplicatesDetected = true;
         // if shortRefNew and duplicate, switch to full random shortRef
@@ -474,6 +479,7 @@ exports.MongoConnection = class MongoConnection {
       throw Error("issue when generating unique id");
     }
     lastIds[lastIdPos] = id;
+    // eslint-disable-next-line no-unused-expressions
     lastIdPos === 9999 ? (lastIdPos = 0) : (lastIdPos += 1);
     return id;
   }

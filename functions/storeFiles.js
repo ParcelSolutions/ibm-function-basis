@@ -2,7 +2,8 @@
 const debug = require("debug")("aws");
 const fs = require("fs");
 const path = require("path");
-const AWS = require("aws-sdk");
+
+const S3 = require("aws-sdk/clients/s3");
 const { v4: uuidv4 } = require("uuid");
 const mime = require("mime-types");
 
@@ -30,15 +31,13 @@ exports.uploadFileToAws = async (
     Key: undefined
   }
 ) => {
-  // Set the region
-  AWS.config.update({
+  // Create S3 service object
+  const s3 = new S3({
+    apiVersion: "2006-03-01",
     region: process.env.AWS_DEFAULT_REGION,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
   });
-
-  // Create S3 service object
-  const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
   // configuring parameters
   if (typeof filePath !== "string")
     throw Error("filePath should be a valid string");
