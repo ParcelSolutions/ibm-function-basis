@@ -21,7 +21,7 @@ describe("store pdf", function() {
     expect(result).to.be.a("object");
     expect(result.Location).to.be.a("string");
     expect(result.Location).to.equal(
-      "https://ondemandreports.s3.amazonaws.com/test-invoice-transmate.pdf"
+      "https://ondemandreports.s3.eu-central-1.amazonaws.com/test-invoice-transmate.pdf"
     );
   });
 

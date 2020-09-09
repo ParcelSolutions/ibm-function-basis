@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const debug = require("debug")("loggin:tofunction");
 
 const rq = require("request");
@@ -12,10 +13,10 @@ function logMeta(data = {}) {
       app: process.env.__OW_ACTION_NAME || "OWfunction",
       ...data
     };
-    return { metadata: meta };
+    return meta;
   } catch (error) {
     console.error("error when trying to build error obj", error);
-    return { metadata: data };
+    return data;
   }
 }
 exports.addLogging = ({ target, level, message, data }) => {
