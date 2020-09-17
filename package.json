@@ -31,7 +31,7 @@
     "dotenv-json": "^1.0.0",
     "lodash": "^4.17.20",
     "logdna": "^3.5.1",
-    "meteor-random": "0.0.3",
+    "meteor-random-node": "^2.0.0",
     "mime-types": "^2.1.27",
     "mongodb": "^3.6.0",
     "pg": "^7.18.2",
