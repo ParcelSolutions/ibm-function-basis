@@ -4,7 +4,7 @@
 
 const { MongoClient } = require("mongodb");
 const debug = require("debug")("mongo");
-const MeteorRandom = require("meteor-random");
+const MeteorRandom = require("meteor-random-node");
 const { to } = require("await-to-js");
 const { numberToString } = require("../functions/utils.js");
 
