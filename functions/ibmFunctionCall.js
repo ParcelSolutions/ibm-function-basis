@@ -1,6 +1,6 @@
 const debug = require("debug")("ibm-functions");
 
-const rq = require("request");
+const fetch = require("node-fetch").default;
 
 exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
   if (!url || (!apiKey && !token) || !params) {
@@ -8,31 +8,37 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       "WARNING: ibmFunctionCall call is missing some required keys, missing ibm function key or token!"
     );
   }
+
+  function checkStatus(res) {
+    if (res.ok) {
+      // res.status >= 200 && res.status < 300
+      return res;
+    }
+    throw Error(`wrong status code:${res.status}`);
+  }
+
   return new Promise((resolve, reject) => {
     // use function to cover unique ids (loop) and only build that function once
 
-    rq.post(
-      {
-        headers: {
-          apiKey,
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        url,
-        json: params
+    fetch(url, {
+      method: "POST",
+      headers: {
+        apiKey,
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
       },
-      (err, response, body) => {
-        if (err) {
-          debug("issue with call %j", err);
-          reject(err);
-        }
-        debug("response: %o", response.statusCode);
-        if (response && response.statusCode !== 200) {
-          debug("status code not 200:", response.statusCode);
-        }
-        debug("body (ibm function answer) : %j", body);
-        resolve({ statusCode: (response || {}).statusCode, body });
-      }
-    );
+
+      body: JSON.stringify(params)
+    })
+      .then(checkStatus)
+      .then(res => res.json())
+      .then(json => {
+        debug("body (ibm function answer) : %j", json);
+        resolve({ statusCode: 200, json });
+      })
+      .catch(err => {
+        debug("not able to convert to json %j", err);
+        reject(err);
+      });
   });
 };
