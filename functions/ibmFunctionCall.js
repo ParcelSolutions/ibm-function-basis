@@ -14,13 +14,13 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       // res.status >= 200 && res.status < 300
       return res;
     }
-    console.error(Error(`wrong status code:${res.status}`));
-    return res;
+    console.error(`wrong status code:${res.status}`);
+    return { res, error: `wrong status code:${res.status}` };
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     // use function to cover unique ids (loop) and only build that function once
-
+    let message;
     fetch(url, {
       method: "POST",
       headers: {
@@ -32,14 +32,17 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       body: JSON.stringify(params)
     })
       .then(checkStatus)
-      .then(res => res.json())
+      .then(res => {
+        message = res;
+        res.json();
+      })
       .then(json => {
         debug("body (ibm function answer) : %j", json);
-        resolve({ statusCode: 200, body: json });
+        resolve({ ...message, body: json });
       })
       .catch(error => {
         debug("not able to convert to json %o", error);
-        resolve({ statusCode: 400, error });
+        resolve({ ...message, error });
       });
   });
 };
