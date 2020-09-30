@@ -34,7 +34,7 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       .then(res => res.json())
       .then(json => {
         debug("body (ibm function answer) : %j", json);
-        resolve({ statusCode: 200, json });
+        resolve({ statusCode: 200, body: json });
       })
       .catch(err => {
         debug("not able to convert to json %j", err);
