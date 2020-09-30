@@ -14,7 +14,8 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       // res.status >= 200 && res.status < 300
       return res;
     }
-    throw Error(`wrong status code:${res.status}`);
+    console.error(Error(`wrong status code:${res.status}`));
+    return res;
   }
 
   return new Promise((resolve, reject) => {
@@ -36,9 +37,9 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
         debug("body (ibm function answer) : %j", json);
         resolve({ statusCode: 200, body: json });
       })
-      .catch(err => {
-        debug("not able to convert to json %j", err);
-        reject(err);
+      .catch(error => {
+        debug("not able to convert to json %o", error);
+        resolve({ statusCode: 400, error });
       });
   });
 };
