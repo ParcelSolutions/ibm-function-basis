@@ -15,7 +15,7 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       return res;
     }
     console.error(`wrong status code:${res.status}`);
-    return { res, error: `wrong status code:${res.status}` };
+    return { ...res, error: `wrong status code:${res.status}` };
   }
 
   return new Promise(resolve => {
@@ -42,7 +42,7 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       })
       .catch(error => {
         debug("not able to convert to json %o", error);
-        resolve({ ...message, error });
+        resolve({ ...message, error: "not able to convert to json" });
       });
   });
 };
