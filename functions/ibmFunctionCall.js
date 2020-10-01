@@ -35,17 +35,17 @@ exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
       .then(checkStatus)
       .then(res => {
         message = res;
-        res.json();
+        return res.json();
       })
       .then(json => {
-        debug("body (ibm function answer) : %j", json);
+        debug("body (ibm function answer) : %j , %o", json, message);
         resolve({ ...message, body: json, statusCode: message.status });
       })
       .catch(error => {
         debug("not able to convert to json %o", error);
         resolve({
           ...message,
-          statusCode: (message || {}).status,
+          statusCode: (message || {}).status || 400,
           error: "not able to convert to json"
         });
       });
