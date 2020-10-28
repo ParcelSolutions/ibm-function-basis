@@ -19,7 +19,7 @@
     "url": "git+https://github.com/ParcelSolutions/ibm-function-basis.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@ParcelSolutions"
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "@sentry/node": "^5.24.2",
