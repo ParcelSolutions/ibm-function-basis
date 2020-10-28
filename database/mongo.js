@@ -249,6 +249,10 @@ exports.MongoConnection = class MongoConnection {
         // eslint-disable-next-line no-param-reassign
         obj.created = createdDT("function");
       }
+      if (!obj.updated) {
+        // eslint-disable-next-line no-param-reassign
+        obj.updated = createdDT("function");
+      }
       conn
         .db()
         .collection(collection)
@@ -438,7 +442,7 @@ exports.MongoConnection = class MongoConnection {
     );
   }
 
-  async getUniqueId({ table, key, type }) {
+  async getUniqueId({ table, key = "_id", type = "meteorId" }) {
     let id;
     let obj = true;
 
