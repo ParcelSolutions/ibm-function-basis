@@ -7,6 +7,7 @@ const debug = require("debug")("mongo");
 const MeteorRandom = require("meteor-random-node");
 const { to } = require("await-to-js");
 const { numberToString } = require("../functions/utils.js");
+const Collections = require("./collections");
 
 const allCapsAlpha = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 let shortRefDuplicatesDetected = false;
@@ -59,6 +60,15 @@ exports.MongoConnection = class MongoConnection {
     this.uri = uri;
   }
 
+  async getModel(name, env) {
+    // user
+    await this.connect();
+    debug("get name %s from :%o", name, Object.keys(Collections));
+    const CollectionModel = new Collections[name](this, env);
+
+    return CollectionModel;
+  }
+
   async connect() {
     if (!mongoConnection[this.uri]) {
       debug("setup connection with ", this.uri.slice(0, 12));
@@ -73,6 +83,7 @@ exports.MongoConnection = class MongoConnection {
     } else {
       debug("connection exists !");
     }
+    this.connection = mongoConnection[this.uri];
     return mongoConnection[this.uri];
   }
 
@@ -524,6 +535,11 @@ exports.MongoConnection = class MongoConnection {
     }
 
     return accountId;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  createdDT(user) {
+    return createdDT(user);
   }
 
   static createdDT(userId) {
