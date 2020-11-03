@@ -2,7 +2,7 @@ const { createdDT, MongoConnection } = require("./database/mongo");
 const PostgresConnection = require("./database/postgress");
 const RedisConnection = require("./database/redis");
 const { setEnv } = require("./functions/setEnv");
-
+const { getCloudUrl } = require("./setup/ibm-functions-defaults.js");
 const { logError } = require("./functions/sentryLogging");
 const closeConnections = require("./functions/closeConnections");
 const { ibmFunctionCall } = require("./functions/ibmFunctionCall");
@@ -12,6 +12,7 @@ const { addLogging } = require("./functions/logFunction");
 
 const { uploadFileToAws } = require("./functions/storeFiles");
 
+exports.getCloudUrl = getCloudUrl;
 exports.createdDT = createdDT;
 exports.MongoConnection = MongoConnection;
 exports.PG = PostgresConnection;
