@@ -73,15 +73,11 @@ const functionList = [
   }
 ];
 
-exports.getCloudUrl = type => {
+exports.getCloudUrl = (baseUrl, type) => {
   const functionParams = functionList.find(el => el.types.includes(type));
   if (!functionParams) throw Error(`missing serverless function type: ${type}`);
-  if (!process.env.transmate_function_url)
-    throw Error(`missing transmate_function_url!`);
+  if (!baseUrl) throw Error(`missing baseUrl!`);
   // default to main ibm function url, default to empty path (if url is given.)
-  const {
-    url = process.env.transmate_function_url,
-    path = ""
-  } = functionParams;
+  const { url = baseUrl, path = "" } = functionParams;
   return url + path;
 };
