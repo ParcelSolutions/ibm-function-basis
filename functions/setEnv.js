@@ -35,9 +35,14 @@ exports.setEnv = (params = {}) => {
     process.env.GOOGLE_MAPS_API =
       params.GOOGLE_MAPS_API || process.env.GOOGLE_MAPS_API;
 
+  // IBM functions
+
   if (params.IBM_FUNCTION_KEY || process.env.IBM_FUNCTION_KEY)
     process.env.IBM_FUNCTION_KEY =
       params.IBM_FUNCTION_KEY || process.env.IBM_FUNCTION_KEY;
+  if (params.IBM_FUNCTION_URL || process.env.IBM_FUNCTION_URL)
+    process.env.IBM_FUNCTION_URL =
+      params.IBM_FUNCTION_URL || process.env.IBM_FUNCTION_URL;
 
   if (params.JWT_SECRET || process.env.JWT_SECRET)
     process.env.JWT_SECRET = params.JWT_SECRET || process.env.JWT_SECRET;
