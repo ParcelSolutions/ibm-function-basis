@@ -4,7 +4,7 @@ const fetch = require("node-fetch").default;
 
 exports.ibmFunctionCall = (url, { apiKey, token }, params) => {
   if (!url || (!apiKey && !token) || !params) {
-    console.log(
+    debug(
       "WARNING: ibmFunctionCall call is missing some required keys, missing ibm function key or token!"
     );
   }

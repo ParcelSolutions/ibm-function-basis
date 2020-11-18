@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const debug = require("debug")("logging:tofunction");
 
-const fetch = require("node-fetch").default; // default export for webpack!
 const { ibmFunctionCall } = require("./ibmFunctionCall");
 
 function logMeta(data = {}) {

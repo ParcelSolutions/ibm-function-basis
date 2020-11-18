@@ -1,13 +1,14 @@
 const Sentry = require("@sentry/node");
 const debug = require("debug")("sentryLogging");
 
-function logError(e, type, request) {
+async function logError(e, type, request) {
   try {
     if (
       process.env.NODE_ENV !== "development" &&
       process.env.SENTRY_DNS &&
       typeof process.env.SENTRY_DNS === "string"
     ) {
+      debug("set dns :%o", process.env.SENTRY_DNS);
       Sentry.init({
         release: "serverlessFunction",
         dsn: process.env.SENTRY_DNS
@@ -22,6 +23,7 @@ function logError(e, type, request) {
         level: Sentry.Severity.Info
       });
       Sentry.captureException(e);
+      await Sentry.flush(2000);
     } else {
       console.log("sentry not enabled, set SENTRY_DNS to enable");
       debug(e, type, request);
@@ -29,7 +31,7 @@ function logError(e, type, request) {
   } catch (error) {
     console.error("error while loggin error...", error);
   }
-  return null;
+  return true;
 }
 
 exports.logError = logError;
