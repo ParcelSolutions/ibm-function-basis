@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "export DEBUG='logging*,sentryLogging,test*,index,mongo,user,-mocha*' NODE_ENV='development' && mocha --exit ",
+    "test": "export DEBUG='aws,logging*,sentryLogging,test*,index,mongo,user,-mocha*' NODE_ENV='development' && mocha --exit ",
     "release": "release-flow start && release-flow publish && release-flow finish",
     "buildwebpacktest": "export DEBUG='logging*' ENTRY_FILE='./index.js' WEBPACK_TEST=true  && webpack --config webpack.config.js && mocha --require source-map-support/register --exit",
     "buildwebpack": "export NODE_ENV='production'  && webpack --config webpack.config.js",
