@@ -7,9 +7,9 @@ const { resolve } = require("path");
 
 let uploadFileToAws;
 if (process.env.WEBPACK_TEST) {
-  ({ uploadFileToAws } = require("../dist/bundle-local"));
+  ({ uploadFileToAws, getFileFromAws } = require("../dist/bundle-local"));
 } else {
-  ({ uploadFileToAws } = require("../functions/storeFiles"));
+  ({ uploadFileToAws, getFileFromAws } = require("../functions/storeFiles"));
 }
 
 describe("store pdf", function() {
@@ -53,5 +53,17 @@ describe("store pdf", function() {
     expect(result.Location).includes(
       "files.transmate.eu/documents/shipment/test/test"
     );
+  });
+
+  it("get logo transmate", async function() {
+    const parms = {
+      fileName: "./test/test_data/logo-transmate.jpg",
+      Bucket: "files.transmate.eu",
+      Key: "logos/transmate/logo_transmate_transparent.png"
+    };
+
+    const result = await getFileFromAws(parms);
+    expect(result).to.be.a("object");
+    expect(result.fileName).to.be.a("string");
   });
 });

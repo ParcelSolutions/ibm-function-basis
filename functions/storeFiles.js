@@ -7,6 +7,10 @@ const S3 = require("aws-sdk/clients/s3");
 const { v4: uuidv4 } = require("uuid");
 const mime = require("mime-types");
 
+const util = require("util");
+
+const writeFile = util.promisify(fs.writeFile);
+
 /* 
 // Call S3 to list the buckets
 s3.listBuckets(err => {
@@ -67,4 +71,23 @@ exports.uploadFileToAws = async (
   }
 
   return stored;
+};
+
+exports.getFileFromAws = async ({ fileName, Bucket, Key }) => {
+  const s3 = new S3({
+    apiVersion: "2006-03-01",
+    region: process.env.AWS_DEFAULT_REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  });
+  if (typeof Bucket !== "string")
+    throw Error("Bucket should be a valid string");
+  if (typeof Key !== "string") throw Error("Key should be a valid string");
+  if (typeof fileName !== "string")
+    throw Error("fileName should be a valid string");
+  const data = await s3.getObject({ Bucket, Key }).promise();
+
+  await writeFile(fileName, data.Body);
+  debug("file downloaded successfully");
+  return { fileName };
 };
