@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 /* eslint-disable func-names */
-require("dotenv-json")();
+
 const { expect } = require("chai");
 const debug = require("debug")("test:store-file");
 const { resolve } = require("path");
@@ -12,7 +12,8 @@ if (process.env.WEBPACK_TEST) {
   ({ uploadFileToAws, getFileFromAws } = require("../functions/storeFiles"));
 }
 
-describe("store pdf", function() {
+describe("aws", function() {
+  this.timeout(20000);
   it("upload to aws", async function() {
     // create template without data
     const path = resolve("./test/test_data/test-invoice-transmate.pdf");
