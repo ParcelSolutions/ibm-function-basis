@@ -12,7 +12,7 @@ if (process.env.WEBPACK_TEST) {
 }
 
 const { MongoConnection } = functionsToTest;
-describe("main-schema", function() {
+describe.skip("main-schema", function() {
   it("test localhost on prod", async function() {
     process.env.__OW_ACTIVATION_ID = "runID";
     // test existing post code

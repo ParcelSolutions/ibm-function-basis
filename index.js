@@ -10,7 +10,7 @@ const { decodeBase64, checkAllParams } = require("./functions/utils");
 const logActivity = require("./functions/logActivity");
 const { addLogging } = require("./functions/logFunction");
 
-const { uploadFileToAws } = require("./functions/storeFiles");
+const { uploadFileToAws, getFileFromAws } = require("./functions/storeFiles");
 
 exports.getCloudUrl = getCloudUrl;
 exports.createdDT = createdDT;
@@ -28,4 +28,5 @@ exports.checkAllParams = checkAllParams;
 exports.logActivity = logActivity;
 
 exports.uploadFileToAws = uploadFileToAws;
+exports.getFileFromAws = getFileFromAws;
 exports.addLogging = addLogging;

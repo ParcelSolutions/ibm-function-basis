@@ -1,5 +1,4 @@
 /* eslint-disable global-require */
-require("dotenv-json")();
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 const { expect } = require("chai");
@@ -14,6 +13,7 @@ if (process.env.WEBPACK_TEST) {
 
 describe("getId", function() {
   it("test is we get an id", async function() {
+    //console.log("connect with", process.env.MONGO_URI_TEST);
     this.timeout(20000);
     let mongo;
     try {
