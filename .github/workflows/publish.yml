@@ -35,8 +35,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: '0'
+          submodules: recursive
           token: ${{secrets.PAT_MY_TOKEN}}
+      - run: echo "//npm.pkg.github.com/:_authToken=\"${{ secrets.PAT_MY_TOKEN }}\"" >> ~/.npmrc
       - uses: actions/setup-node@v1
         with:
           node-version: 12
