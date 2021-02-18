@@ -30,6 +30,7 @@ if (process.env.WEBPACK_TEST) {
 //   target: 'test'
 // });
 describe("logging", function() {
+  this.timeout(5000);
   // eslint-disable-next-line func-names
   it("test addLogging", async function() {
     const result = await addLogging({ level: "info", message: "start app" });
