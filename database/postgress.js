@@ -30,14 +30,13 @@ module.exports = class Pg {
     try {
       client = await this.pool.connect();
       const result = await client.query("SELECT NOW()");
-      client.release();
       return result.rows[0];
     } catch (error) {
       console.error("Error executing query", error.stack);
       throw error;
     }
     finally {
-      if (client) client.release();
+      if (client) await client.release();
     }
   }
 
@@ -47,13 +46,12 @@ module.exports = class Pg {
       debug("run pq %o", query);
       client = await this.pool.connect();
       const result = await client.query(query);
-      client.release();
       return result.rows;
     } catch (error) {
       console.error("Error executing query", error.stack);
       throw error;
     } finally {
-      if (client) client.release();
+      if (client) await client.release();
     }
   }
 
