@@ -26,27 +26,32 @@ module.exports = class Pg {
   }
 
   async testPgConnection() {
+    let client;
     try {
-      const client = await this.pool.connect();
+      client = await this.pool.connect();
       const result = await client.query("SELECT NOW()");
-      client.release();
       return result.rows[0];
     } catch (error) {
       console.error("Error executing query", error.stack);
       throw error;
     }
+    finally {
+      if (client) await client.release();
+    }
   }
 
   async runQuery(query) {
+    let client;
     try {
       debug("run pq %o", query);
-      const client = await this.pool.connect();
+      client = await this.pool.connect();
       const result = await client.query(query);
-      client.release();
       return result.rows;
     } catch (error) {
       console.error("Error executing query", error.stack);
       throw error;
+    } finally {
+      if (client) await client.release();
     }
   }
 

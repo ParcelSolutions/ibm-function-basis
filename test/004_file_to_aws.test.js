@@ -1,17 +1,19 @@
+/* eslint-disable global-require */
 /* eslint-disable func-names */
-require("dotenv-json")();
+
 const { expect } = require("chai");
 const debug = require("debug")("test:store-file");
 const { resolve } = require("path");
 
 let uploadFileToAws;
 if (process.env.WEBPACK_TEST) {
-  ({ uploadFileToAws } = require("../dist/bundle-local"));
+  ({ uploadFileToAws, getFileFromAws } = require("../dist/bundle-local"));
 } else {
-  ({ uploadFileToAws } = require("../functions/storeFiles"));
+  ({ uploadFileToAws, getFileFromAws } = require("../functions/storeFiles"));
 }
 
-describe("store pdf", function() {
+describe("aws", function() {
+  this.timeout(20000);
   it("upload to aws", async function() {
     // create template without data
     const path = resolve("./test/test_data/test-invoice-transmate.pdf");
@@ -21,7 +23,7 @@ describe("store pdf", function() {
     expect(result).to.be.a("object");
     expect(result.Location).to.be.a("string");
     expect(result.Location).to.equal(
-      "https://ondemandreports.s3.amazonaws.com/test-invoice-transmate.pdf"
+      "https://ondemandreports.s3.eu-central-1.amazonaws.com/test-invoice-transmate.pdf"
     );
   });
 
@@ -52,5 +54,17 @@ describe("store pdf", function() {
     expect(result.Location).includes(
       "files.transmate.eu/documents/shipment/test/test"
     );
+  });
+
+  it("get logo transmate", async function() {
+    const parms = {
+      fileName: "./test/test_data/logo-transmate.jpg",
+      Bucket: "files.transmate.eu",
+      Key: "logos/transmate/logo_transmate_transparent.png"
+    };
+
+    const result = await getFileFromAws(parms);
+    expect(result).to.be.a("object");
+    expect(result.fileName).to.be.a("string");
   });
 });

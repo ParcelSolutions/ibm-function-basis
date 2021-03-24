@@ -1,0 +1,3 @@
+[submodule "transmateSchemas"]
+	path = transmateSchemas
+	url = https://github.com/ph-poppe/transmateSchemas.git

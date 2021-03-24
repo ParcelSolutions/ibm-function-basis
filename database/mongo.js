@@ -4,9 +4,10 @@
 
 const { MongoClient } = require("mongodb");
 const debug = require("debug")("mongo");
-const MeteorRandom = require("meteor-random");
+const MeteorRandom = require("meteor-random-node");
 const { to } = require("await-to-js");
 const { numberToString } = require("../functions/utils.js");
+const Collections = require("./collections");
 
 const allCapsAlpha = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 let shortRefDuplicatesDetected = false;
@@ -59,6 +60,15 @@ exports.MongoConnection = class MongoConnection {
     this.uri = uri;
   }
 
+  async getModel(name, env) {
+    // user
+    await this.connect();
+    debug("get name %s from :%o", name, Object.keys(Collections));
+    const CollectionModel = new Collections[name](this, env);
+
+    return CollectionModel;
+  }
+
   async connect() {
     if (!mongoConnection[this.uri]) {
       debug("setup connection with ", this.uri.slice(0, 12));
@@ -73,6 +83,7 @@ exports.MongoConnection = class MongoConnection {
     } else {
       debug("connection exists !");
     }
+    this.connection = mongoConnection[this.uri];
     return mongoConnection[this.uri];
   }
 
@@ -248,6 +259,10 @@ exports.MongoConnection = class MongoConnection {
       if (!obj.created) {
         // eslint-disable-next-line no-param-reassign
         obj.created = createdDT("function");
+      }
+      if (!obj.updated) {
+        // eslint-disable-next-line no-param-reassign
+        obj.updated = createdDT("function");
       }
       conn
         .db()
@@ -428,13 +443,17 @@ exports.MongoConnection = class MongoConnection {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   generator(len) {
-    return [...Array(len)]
-      .map(i => allCapsAlpha[(Math.random() * allCapsAlpha.length) | 0])
-      .join("");
+    return (
+      [...Array(len)]
+        // eslint-disable-next-line no-bitwise
+        .map(() => allCapsAlpha[(Math.random() * allCapsAlpha.length) | 0])
+        .join("")
+    );
   }
 
-  async getUniqueId({ table, key, type }) {
+  async getUniqueId({ table, key = "_id", type = "meteorId" }) {
     let id;
     let obj = true;
 
@@ -465,6 +484,7 @@ exports.MongoConnection = class MongoConnection {
         // eslint-disable-next-line no-await-in-loop
         obj =
           lastIds.includes(id) ||
+          // eslint-disable-next-line no-await-in-loop
           (await this.findOne(table, { [key]: id }, { _id: 1 }));
         if (obj) shortRefDuplicatesDetected = true;
         // if shortRefNew and duplicate, switch to full random shortRef
@@ -474,6 +494,7 @@ exports.MongoConnection = class MongoConnection {
       throw Error("issue when generating unique id");
     }
     lastIds[lastIdPos] = id;
+    // eslint-disable-next-line no-unused-expressions
     lastIdPos === 9999 ? (lastIdPos = 0) : (lastIdPos += 1);
     return id;
   }
@@ -514,6 +535,11 @@ exports.MongoConnection = class MongoConnection {
     }
 
     return accountId;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  createdDT(user) {
+    return createdDT(user);
   }
 
   static createdDT(userId) {

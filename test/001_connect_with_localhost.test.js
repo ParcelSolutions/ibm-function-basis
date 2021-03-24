@@ -1,7 +1,8 @@
+/* eslint-disable global-require */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 const { expect } = require("chai");
-const debug = require("debug")("test:localhost error mng");
+// const debug = require("debug")("test:localhost error mng");
 // gets the global main function
 let functionsToTest;
 if (process.env.WEBPACK_TEST) {
@@ -11,7 +12,7 @@ if (process.env.WEBPACK_TEST) {
 }
 
 const { MongoConnection } = functionsToTest;
-describe("main-schema", function() {
+describe.skip("main-schema", function() {
   it("test localhost on prod", async function() {
     process.env.__OW_ACTIVATION_ID = "runID";
     // test existing post code

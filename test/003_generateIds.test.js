@@ -1,4 +1,4 @@
-require("dotenv-json")();
+/* eslint-disable global-require */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 const { expect } = require("chai");
@@ -13,6 +13,7 @@ if (process.env.WEBPACK_TEST) {
 
 describe("getId", function() {
   it("test is we get an id", async function() {
+    //console.log("connect with", process.env.MONGO_URI_TEST);
     this.timeout(20000);
     let mongo;
     try {
@@ -44,6 +45,7 @@ describe("getId", function() {
     const id = await result;
     debug("refNumber", { id });
     expect(id).to.be.a("string");
+    expect(id.length).to.be.greaterThan(3);
   });
   it("test is we get 10000 refNumbers", async function() {
     this.timeout(30000);
@@ -57,7 +59,8 @@ describe("getId", function() {
     const longArray = Array.from(Array(100));
     debug("elements %o", longArray.length);
     const results = await Promise.all(
-      longArray.map(async _ => {
+      // eslint-disable-next-line no-unused-vars
+      longArray.map(async _el => {
         try {
           const result = mongo.getUniqueId({
             table: "shipments",
@@ -66,8 +69,8 @@ describe("getId", function() {
           });
 
           return result;
-        } catch (e) {
-          console.error(e);
+        } catch (error) {
+          console.error(error);
           return error;
         }
       })
