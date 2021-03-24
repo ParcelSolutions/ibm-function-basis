@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
-const {  MongoConnection } = require("../database/mongo");
+const { MongoConnection } = require("../database/mongo");
 const mongod = new MongoMemoryServer();
 
 async function startMongo() {
@@ -17,19 +17,19 @@ const fs = require("fs").promises;
 
 const path = "./transmateSchemas/fixtures/";
 async function readDirectory() {
-  try{
+  try {
     const files = await fs.readdir(path);
     return files;
 
   }
- catch(e){
-   console.warn("no schema/fixtures found!");
-   return [];
- }
+  catch (e) {
+    console.warn("no schema/fixtures found!");
+    return [];
+  }
 }
 
 async function readFile(fileName) {
-  
+
   const rawdata = await fs.readFile(path + fileName);
 
   return JSON.parse(rawdata);
@@ -85,7 +85,7 @@ function collectionMap(fileName) {
       collection: "costs"
     },
     shipments: {
-      collection: "shipents"
+      collection: "shipments"
     },
     shipmentsViews: {
       collection: "shipments.views"
@@ -182,7 +182,7 @@ async function getCleanDb() {
       await mongo.insertMany(collectionNameMapped, cleanFixtureData(data));
     }
   }
-  
+
   return uri;
 }
 
