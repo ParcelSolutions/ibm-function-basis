@@ -12,17 +12,18 @@ if (process.env.WEBPACK_TEST) {
 }
 
 const { MongoConnection } = functionsToTest;
-describe.skip("main-schema", function() {
-  it("test localhost on prod", async function() {
+describe("mongo connect", function () {
+  it("test localhost on prod", async function () {
     process.env.__OW_ACTIVATION_ID = "runID";
     // test existing post code
 
-    expect(function() {
+    expect(function () {
       // eslint-disable-next-line no-new
       new MongoConnection("mongodb://localhost:27017/myproject");
     }).to.throw("don't connect to localhost db when running on openwhisk!");
+    delete process.env.__OW_ACTIVATION_ID;
   });
-  it("test localhost on local server", async function() {
+  it("test localhost on local server", async function () {
     delete process.env.__OW_ACTIVATION_ID;
     // test existing post code
 
@@ -31,12 +32,20 @@ describe.skip("main-schema", function() {
     );
   });
 
-  it("test remote on prod", async function() {
+  it("test remote on prod", async function () {
     process.env.__OW_ACTIVATION_ID = "runID";
     // test existing post code
 
     expect(new MongoConnection("mongodb://server:27017/myproject")).to.be.an(
       "object"
     );
+    delete process.env.__OW_ACTIVATION_ID;
+  });
+
+  it("test connection localhost", async function () {
+    delete process.env.__OW_ACTIVATION_ID;
+    const mongo = new MongoConnection(process.env.LOCAL_MONGO);
+    const conn = await mongo.connect();
+    expect(conn).to.be.an("object");
   });
 });

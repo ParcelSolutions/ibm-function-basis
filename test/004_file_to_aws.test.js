@@ -6,15 +6,16 @@ const debug = require("debug")("test:store-file");
 const { resolve } = require("path");
 
 let uploadFileToAws;
+let getFileFromAws;
 if (process.env.WEBPACK_TEST) {
   ({ uploadFileToAws, getFileFromAws } = require("../dist/bundle-local"));
 } else {
   ({ uploadFileToAws, getFileFromAws } = require("../functions/storeFiles"));
 }
 
-describe("aws", function() {
+describe("aws", function () {
   this.timeout(20000);
-  it("upload to aws", async function() {
+  it("upload to aws", async function () {
     // create template without data
     const path = resolve("./test/test_data/test-invoice-transmate.pdf");
     debug("use file :", path);
@@ -27,7 +28,7 @@ describe("aws", function() {
     );
   });
 
-  it("upload to aws unique filename", async function() {
+  it("upload to aws unique filename", async function () {
     // create template without data
     const path = resolve("./test/test_data/test-invoice-transmate.pdf");
     debug("use file :", path);
@@ -40,7 +41,7 @@ describe("aws", function() {
     expect(result.Location).includes("_test-invoice-transmate.pdf");
   });
 
-  it("upload to aws specific bucket", async function() {
+  it("upload to aws specific bucket", async function () {
     // create template without data
     const path = resolve("./test/test_data/test-invoice-transmate.pdf");
     debug("use file :", path);
@@ -56,7 +57,7 @@ describe("aws", function() {
     );
   });
 
-  it("get logo transmate", async function() {
+  it("get logo transmate", async function () {
     const parms = {
       fileName: "./test/test_data/logo-transmate.jpg",
       Bucket: "files.transmate.eu",

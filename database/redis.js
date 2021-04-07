@@ -19,10 +19,14 @@ module.exports = class RedisConnection {
       if (!process.env.REDIS_URL) {
         throw Error("env REDIS_URL missing!");
       }
-      const client = redis.createClient(process.env.REDIS_URL, {
+      const redisUrl = new URL(process.env.REDIS_URL);
+
+      debug("redis url %o", redisUrl);
+      const client = redis.createClient(redisUrl.href, {
+        auth_pass: redisUrl.password,
         tls: {
           rejectUnauthorized: false,
-          servername: new URL(process.env.REDIS_URL).hostname
+          servername: redisUrl.hostname
         }
       });
       const redisDB = process.env.NODE_ENV === "production" ? 0 : 1;

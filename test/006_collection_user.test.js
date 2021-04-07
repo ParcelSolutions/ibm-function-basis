@@ -11,12 +11,12 @@ if (process.env.WEBPACK_TEST) {
   ({ MongoConnection } = require("../index"));
 }
 
-describe("collection_user", function() {
+describe("collection_user", function () {
   let mongo;
   let existingUser;
-  before(async function() {
+  before(async function () {
     try {
-      mongo = new MongoConnection(process.env.MONGO_URI_TEST);
+      mongo = new MongoConnection(process.env.LOCAL_MONGO);
       await mongo.connect();
       const User = await mongo.getModel("User");
       existingUser = await User.collection.findOne({
@@ -27,7 +27,7 @@ describe("collection_user", function() {
     }
   });
 
-  it("collection user get by email", async function() {
+  it("collection user get by email", async function () {
     const email = existingUser.emails[0].address;
     debug("email to test for", email);
     const User = await mongo.getModel("User");
@@ -37,7 +37,7 @@ describe("collection_user", function() {
     expect(result._id).to.equal(existingUser._id);
   });
 
-  it("set process obj", async function() {
+  it("set process obj", async function () {
     const email = existingUser.emails[0].address;
     const { first, last } = existingUser.profile;
     debug("email to test for", email);
@@ -54,7 +54,7 @@ describe("collection_user", function() {
     expect(result.isNew).to.equal(false);
   });
 
-  it("set process obj on new user", async function() {
+  it("set process obj on new user", async function () {
     const email = `${uuidv4()}@transmate.eu`;
     const { first, last } = existingUser.profile;
     debug("email to test for", email);

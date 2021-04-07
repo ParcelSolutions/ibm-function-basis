@@ -40,8 +40,9 @@ exports.MongoConnection = class MongoConnection {
     if (!uri || typeof uri !== "string") {
       throw Error("uri should always be set!");
     }
+    debug("openwhisk activation id? ", process.env.__OW_ACTIVATION_ID);
     if (
-      process.env.__OW_ACTIVATION_ID &&
+      typeof process.env.__OW_ACTIVATION_ID === "string" &&
       (uri.includes("localhost") || uri.includes("127.0.0.1"))
     ) {
       throw Error("don't connect to localhost db when running on openwhisk!");

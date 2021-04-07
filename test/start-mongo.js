@@ -170,6 +170,7 @@ async function getCleanDb() {
   const files = await readDirectory();
   console.log("files to process in folder", files.length);
   const regexCollection = /data.(.*).json/; // regex to get collection name from file
+  // eslint-disable-next-line no-restricted-syntax
   for (const file of files) {
     const [, collectionName] = regexCollection.exec(file) || [];
 
