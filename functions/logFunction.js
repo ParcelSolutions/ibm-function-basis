@@ -20,7 +20,7 @@ function logMeta(data = {}) {
   }
 }
 
-exports.addLogging = ({ target, level, message, data }) => {
+exports.addLogging = ({ type, target, level, message, data }) => {
   if (!message) {
     return console.warn("WARNING: call is missing message!");
   }
@@ -28,6 +28,6 @@ exports.addLogging = ({ target, level, message, data }) => {
   return ibmFunctionCall(
     url,
     {},
-    { target, level, message, meta: logMeta(data) }
+    { type, target, level, message, meta: logMeta(data) }
   );
 };
