@@ -17,7 +17,6 @@ describe("redis", function () {
     const redis = new RedisConnection();
     debug("before connect %o", redis);
     await redis.connect();
-    debug("after connect %o", Object.keys(redis.client));
-    expect(redis.client).to.be.an("object");
+    expect(redis.client.connected).to.be.eql(true);
   });
 });
