@@ -22,7 +22,9 @@ module.exports = class RedisConnection {
       const redisUrl = new URL(process.env.REDIS_URL);
 
       debug("redis url %o", redisUrl);
-      const client = redis.createClient(redisUrl.href, {
+      const client = redis.createClient({
+        host: redisUrl.hostname,
+        port: redisUrl.port,
         auth_pass: redisUrl.password,
         tls: {
           rejectUnauthorized: false,
