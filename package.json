@@ -1,6 +1,6 @@
 {
   "name": "@parcelsolutions/ibm-function-basis",
-  "version": "2.1.01",
+  "version": "2.0.61",
   "description": "functions to reuse in all OpenWhisk functions",
   "main": "index.js",
   "directories": {
@@ -63,6 +63,7 @@
     "mongodb-memory-server": "^6.9.6",
     "nyc": "^14.1.1",
     "prettier": "1.18.2",
+    "release-flow": "^1.2.1",
     "rewire": "^4.0.1",
     "sinon": "^9.2.4",
     "sinon-chai": "^3.5.0",
