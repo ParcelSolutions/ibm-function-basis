@@ -1,5 +1,5 @@
 {
-  "name": "@ParcelSolutions/ibm-function-basis",
+  "name": "@parcelsolutions/ibm-function-basis",
   "version": "2.0.50",
   "description": "functions to reuse in all OpenWhisk functions",
   "main": "index.js",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ParcelSolutions/ibm-function-basis.git"
+    "url": "git+https://github.com/parcelsolutions/ibm-function-basis.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -73,7 +73,7 @@
   "author": "Jan Carpentier",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ParcelSolutions/ibm-function-basis/issues"
+    "url": "https://github.com/parcelsolutions/ibm-function-basis/issues"
   },
-  "homepage": "https://github.com/ParcelSolutions/iibm-function-basis#readme"
+  "homepage": "https://github.com/parcelsolutions/iibm-function-basis#readme"
 }
