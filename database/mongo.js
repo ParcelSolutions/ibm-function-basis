@@ -89,26 +89,19 @@ exports.MongoConnection = class MongoConnection {
   }
 
   async db(dbName) {
-    try {
-      const conn = await this.connect();
-      if (!conn) throw Error("no db connection!");
-      return conn.db(dbName);
-    } catch (e) {
-      throw e;
-    }
+    const conn = await this.connect();
+    if (!conn) throw Error("no db connection!");
+    return conn.db(dbName);
   }
 
   async close(uri) {
     if (mongoConnection[this.uri || uri]) {
       console.log("mongoclient exists, lets close it!");
-      try {
-        const conn = await this.connect();
-        if (!conn) throw Error("no db connection!");
-        await conn.close();
-        mongoConnection[this.uri || uri] = null;
-      } catch (e) {
-        throw e;
-      }
+
+      const conn = await this.connect();
+      if (!conn) throw Error("no db connection!");
+      await conn.close();
+      mongoConnection[this.uri || uri] = null;
     }
     return true;
   }
@@ -124,14 +117,11 @@ exports.MongoConnection = class MongoConnection {
 
   async getId() {
     // debug("uniqueIds %o, get 1", uniqueIds.length);
-    try {
-      if (!uniqueIds[this.uri] || uniqueIds[this.uri].length === 0) {
-        await this.buildIds();
-      }
-      return uniqueIds[this.uri].pop();
-    } catch (err) {
-      throw err;
+
+    if (!uniqueIds[this.uri] || uniqueIds[this.uri].length === 0) {
+      await this.buildIds();
     }
+    return uniqueIds[this.uri].pop();
   }
 
   async buildIds(
