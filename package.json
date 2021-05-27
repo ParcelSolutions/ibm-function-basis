@@ -9,7 +9,6 @@
   "scripts": {
     "postinstall": "git submodule init && git submodule update --init  --recursive",
     "test": "export DEBUG='redis,aws,logging*,sentryLogging,test*,index,-mongo*,user,-mocha*' NODE_ENV='development' && mocha --exit ",
-    "release": "release-flow start && release-flow publish && release-flow finish",
     "buildwebpacktest": "export DEBUG='logging*' ENTRY_FILE='./index.js' WEBPACK_TEST=true  && webpack --config webpack.config.js && mocha --require source-map-support/register --exit",
     "buildwebpack": "export NODE_ENV='production'  && webpack --config webpack.config.js",
     "create": "ibmcloud fn action create ibm-function-basis dist/bundle.js --kind nodejs:10",
@@ -23,10 +22,11 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.17.0",
     "@sentry/node": "^5.30.0",
     "ajv": "^6.12.6",
     "await-to-js": "^2.1.1",
-    "aws-sdk": "^2.847.0",
+
     "debug": "^4.3.1",
     "email-validator": "^2.0.4",
     "meteor-random-node": "^2.0.0",
@@ -63,7 +63,6 @@
     "mongodb-memory-server": "^6.9.6",
     "nyc": "^14.1.1",
     "prettier": "1.18.2",
-    "release-flow": "^1.2.1",
     "rewire": "^4.0.1",
     "sinon": "^9.2.4",
     "sinon-chai": "^3.5.0",

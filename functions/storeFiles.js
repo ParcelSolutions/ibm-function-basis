@@ -2,15 +2,33 @@
 const debug = require("debug")("aws");
 const fs = require("fs");
 const path = require("path");
+const fetch = require("node-fetch").default;
+const https = require("https");
 
-const S3 = require("aws-sdk/clients/s3");
+function getUrlFromBucket({ region }, { Bucket, Key }) {
+  const regionString = region.includes("us-east-1") ? "" : `.${region}`;
+  return `https://${Bucket}.s3${regionString}.amazonaws.com/${Key}`;
+}
+
+// const S3 = require("aws-sdk/clients/s3");
+const {
+  S3Client: S3,
+  PutObjectCommand,
+  HeadObjectCommand
+} = require("@aws-sdk/client-s3");
 const { v4: uuidv4 } = require("uuid");
 const mime = require("mime-types");
 
 const util = require("util");
+const streamPipeline = util.promisify(require("stream").pipeline);
 
-const writeFile = util.promisify(fs.writeFile);
-
+// const writeFile = util.promisify(fs.writeFile);
+const s3Settings = {
+  apiVersion: "2006-03-01",
+  region: process.env.AWS_DEFAULT_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+};
 /* 
 // Call S3 to list the buckets
 s3.listBuckets(err => {
@@ -21,11 +39,12 @@ s3.listBuckets(err => {
     // console.log("Success", data.Buckets);
   }
 }); */
-function sizeOf(s3, key, bucket) {
-  return s3
-    .headObject({ Key: key, Bucket: bucket })
-    .promise()
-    .then(res => res.ContentLength);
+async function sizeOf(s3, key, bucket) {
+  const res = await s3.send(
+    new HeadObjectCommand({ Key: key, Bucket: bucket })
+  );
+  // debug(res);
+  return res.ContentLength;
 }
 exports.uploadFileToAws = async (
   filePath,
@@ -36,12 +55,8 @@ exports.uploadFileToAws = async (
   }
 ) => {
   // Create S3 service object
-  const s3 = new S3({
-    apiVersion: "2006-03-01",
-    region: process.env.AWS_DEFAULT_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-  });
+
+  const s3 = new S3(s3Settings);
   // configuring parameters
   if (typeof filePath !== "string")
     throw Error("filePath should be a valid string");
@@ -53,6 +68,7 @@ exports.uploadFileToAws = async (
   if (options.generateUniqueFileName) {
     awsFileName = `${Date.now()}_${uuidv4()}_${path.basename(filePath)}`;
   }
+
   const params = {
     Bucket: options.Bucket || process.env.AWS_S3_BUCKET,
     Body: fs.createReadStream(filePath),
@@ -61,33 +77,38 @@ exports.uploadFileToAws = async (
     ContentType: mime.lookup(filePath),
     ResponseContentDisposition: `inline; filename='${path.basename(filePath)}'`
   };
+  const url = getUrlFromBucket(s3Settings, params);
   try {
-    stored = await s3.upload(params).promise();
+    stored = await s3.send(new PutObjectCommand(params));
+
     stored.size = await sizeOf(s3, params.Key, params.Bucket);
-    debug("Uploaded in:%s, %o", stored.Location, stored);
+    debug("Uploaded params:%o, result %o", params, stored);
   } catch (err) {
     console.error(err);
     throw err;
   }
 
-  return stored;
+  return { Location: url, url, stored };
 };
 
 exports.getFileFromAws = async ({ fileName, Bucket, Key }) => {
-  const s3 = new S3({
-    apiVersion: "2006-03-01",
-    region: process.env.AWS_DEFAULT_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-  });
   if (typeof Bucket !== "string")
     throw Error("Bucket should be a valid string");
   if (typeof Key !== "string") throw Error("Key should be a valid string");
   if (typeof fileName !== "string")
     throw Error("fileName should be a valid string");
-  const data = await s3.getObject({ Bucket, Key }).promise();
+  const url = getUrlFromBucket(s3Settings, { Key, Bucket });
 
-  await writeFile(fileName, data.Body);
+  const httpsAgent = new https.Agent({
+    rejectUnauthorized: false
+  });
+  const response = await fetch(url, {
+    agent: httpsAgent
+  });
+  if (!response.ok)
+    throw new Error(`unexpected response ${response.statusText}`);
+  await streamPipeline(response.body, fs.createWriteStream(fileName));
+  // await writeFile(fileName, data.body);
   debug("file downloaded successfully");
   return { fileName };
 };
