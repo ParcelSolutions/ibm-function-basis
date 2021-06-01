@@ -22,13 +22,16 @@ const mime = require("mime-types");
 const util = require("util");
 const streamPipeline = util.promisify(require("stream").pipeline);
 
+function gets3Settings() {
+  return {
+    apiVersion: "2006-03-01",
+    region: process.env.AWS_DEFAULT_REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  };
+}
 // const writeFile = util.promisify(fs.writeFile);
-const s3Settings = {
-  apiVersion: "2006-03-01",
-  region: process.env.AWS_DEFAULT_REGION,
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-};
+
 /* 
 // Call S3 to list the buckets
 s3.listBuckets(err => {
@@ -56,7 +59,7 @@ exports.uploadFileToAws = async (
 ) => {
   // Create S3 service object
 
-  const s3 = new S3(s3Settings);
+  const s3 = new S3(gets3Settings());
   // configuring parameters
   if (typeof filePath !== "string")
     throw Error("filePath should be a valid string");
@@ -77,7 +80,7 @@ exports.uploadFileToAws = async (
     ContentType: mime.lookup(filePath),
     ResponseContentDisposition: `inline; filename='${path.basename(filePath)}'`
   };
-  const url = getUrlFromBucket(s3Settings, params);
+  const url = getUrlFromBucket(gets3Settings(), params);
   try {
     stored = await s3.send(new PutObjectCommand(params));
 
@@ -97,7 +100,7 @@ exports.getFileFromAws = async ({ fileName, Bucket, Key }) => {
   if (typeof Key !== "string") throw Error("Key should be a valid string");
   if (typeof fileName !== "string")
     throw Error("fileName should be a valid string");
-  const url = getUrlFromBucket(s3Settings, { Key, Bucket });
+  const url = getUrlFromBucket(gets3Settings(), { Key, Bucket });
 
   const httpsAgent = new https.Agent({
     rejectUnauthorized: false
