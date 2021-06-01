@@ -1,6 +1,6 @@
 {
   "name": "@parcelsolutions/ibm-function-basis",
-  "version": "2.0.64",
+  "version": "2.0.65",
   "description": "functions to reuse in all OpenWhisk functions",
   "main": "index.js",
   "directories": {
@@ -26,7 +26,6 @@
     "@sentry/node": "^5.30.0",
     "ajv": "^6.12.6",
     "await-to-js": "^2.1.1",
-
     "debug": "^4.3.1",
     "email-validator": "^2.0.4",
     "meteor-random-node": "^2.0.0",
