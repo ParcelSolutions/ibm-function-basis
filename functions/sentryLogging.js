@@ -25,8 +25,8 @@ async function logError(e, type, request) {
       Sentry.captureException(e);
       await Sentry.flush(2000);
     } else {
-      console.log("sentry not enabled, set SENTRY_DNS to enable");
-      debug(e, type, request);
+      debug("sentry not enabled, set SENTRY_DNS to enable");
+     
     }
   } catch (error) {
     console.error("error while loggin error...", error);

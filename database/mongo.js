@@ -78,7 +78,7 @@ exports.MongoConnection = class MongoConnection {
         mongoConnection[this.uri] = client;
         console.log("start mongodb conn");
       } catch (error) {
-        console.error(error);
+        debug("CONNEECTION ERROR", error);
         throw Error("not able to connect to db!");
       }
     } else {
@@ -96,7 +96,7 @@ exports.MongoConnection = class MongoConnection {
 
   async close(uri) {
     if (mongoConnection[this.uri || uri]) {
-      console.log("mongoclient exists, lets close it!");
+      debug("mongoclient exists, lets close it!");
 
       const conn = await this.connect();
       if (!conn) throw Error("no db connection!");
@@ -174,7 +174,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .find(query, { projection: fields }, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             // cursor to array is a promise!
@@ -199,7 +199,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .findOne(query, options, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug("query %o on collection %s, found  %o", query, collection, r);
@@ -228,7 +228,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .insertMany(insertManyArray, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug("inserted ex:  %o", insertManyArray[0]);
@@ -260,7 +260,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .insertOne(obj, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug("collection %s inserted ex:  %o ", collection, obj);
@@ -283,7 +283,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .updateOne(query, update, options, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug(
@@ -312,7 +312,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .updateMany(query, update, options, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug(
@@ -337,7 +337,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .bulkWrite(array, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug(
@@ -365,7 +365,7 @@ exports.MongoConnection = class MongoConnection {
         .collection(collection)
         .deleteMany(query, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug("deleted %o, result %o", query, r.deletedCount);
@@ -389,7 +389,7 @@ exports.MongoConnection = class MongoConnection {
         .collection("worker.notifications")
         .insertOne({ type, event, data, createdDT: createdDT() }, (err, r) => {
           if (err) {
-            console.error(err);
+            debug("ERROR", err);
             reject(err);
           } else {
             debug("notification inserted type %o , event %o", type, event);
@@ -419,7 +419,7 @@ exports.MongoConnection = class MongoConnection {
           { userId, accountId, activity, data, ts: new Date() },
           (err, r) => {
             if (err) {
-              console.error(err);
+              debug("ERROR", err);
               reject(err);
             } else {
               debug(
@@ -481,7 +481,7 @@ exports.MongoConnection = class MongoConnection {
         // if shortRefNew and duplicate, switch to full random shortRef
       } while (obj); // continue when result is given (means it exists)
     } catch (err) {
-      console.error(err);
+      debug("ERROR", err);
       throw Error("issue when generating unique id");
     }
     lastIds[lastIdPos] = id;
@@ -521,7 +521,7 @@ exports.MongoConnection = class MongoConnection {
         obj = await this.findOne("accounts", { _id: accountId }, { _id: 1 });
       } while (obj);
     } catch (err) {
-      console.error(err);
+      debug("ERROR", err);
       throw Error("issue when generating accountID");
     }
 
