@@ -29,22 +29,38 @@ if (process.env.WEBPACK_TEST) {
 //   accountId: '3',
 //   target: 'test'
 // });
-describe("logging", function () {
+describe("logging", function() {
   this.timeout(5000);
   // eslint-disable-next-line func-names
-  it("test addLogging", async function () {
-    const result = await addLogging({ target: "dev", type: "testing", level: "info", message: "start app" });
+  it("test addLogging", async function() {
+    const result = await addLogging({
+      target: "dev",
+      type: "testing",
+      level: "info",
+      message: "start app"
+    });
     expect(result.statusCode).to.equal(200);
-    await addLogging({ target: "dev", type: "testing", level: "debug", message: "test2" });
+    await addLogging({
+      target: "dev",
+      type: "testing",
+      level: "debug",
+      message: "test2"
+    });
     try {
       throw Error("test4 error throw");
     } catch (e) {
-      await addLogging({ target: "dev", type: "testing", level: "error", message: "test4", error: e.stack });
+      await addLogging({
+        target: "dev",
+        type: "testing",
+        level: "error",
+        message: "test4",
+        error: e.stack
+      });
     }
     // throw Error("test5 winston logging");
   });
 
-  it("test logError", async function () {
+  it("test logError", async function() {
     process.env.NODE_ENV = "test";
     process.env.SENTRY_DNS = process.env.TEST_SENTRY_DNS;
     const e = new Error("test error");

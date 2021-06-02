@@ -34,8 +34,7 @@ module.exports = class Pg {
     } catch (error) {
       console.error("Error executing query", error.stack);
       throw error;
-    }
-    finally {
+    } finally {
       if (client) await client.release();
     }
   }

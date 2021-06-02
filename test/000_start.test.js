@@ -2,7 +2,6 @@
 require("dotenv-json")();
 const debug = require("debug");
 
-
 let MongoConnection;
 if (process.env.WEBPACK_TEST) {
   ({ MongoConnection } = require("../dist/bundle-local"));
@@ -18,7 +17,7 @@ if (process.env.DEBUG_LEVEL === "off") {
 
 const { getCleanDb } = require("./start-mongo.js");
 
-before(async function () {
+before(async function() {
   this.timeout(20000);
   console.log("setup test env");
   await getCleanDb();

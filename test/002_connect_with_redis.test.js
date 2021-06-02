@@ -12,8 +12,8 @@ if (process.env.WEBPACK_TEST) {
 }
 
 const { RedisConnection } = functionsToTest;
-describe("redis", function () {
-  it("test localhost on prod", async function () {
+describe("redis", function() {
+  it("test localhost on prod", async function() {
     const redis = new RedisConnection();
     debug("before connect %o", redis);
     await redis.connect();

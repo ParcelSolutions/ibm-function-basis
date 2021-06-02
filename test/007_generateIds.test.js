@@ -11,9 +11,8 @@ if (process.env.WEBPACK_TEST) {
   ({ MongoConnection } = require("../index"));
 }
 
-describe("getId", function () {
-  it("test is we get an id", async function () {
-
+describe("getId", function() {
+  it("test is we get an id", async function() {
     this.timeout(20000);
     let mongo;
     try {
@@ -28,7 +27,7 @@ describe("getId", function () {
     expect(id).to.be.a("string");
   });
 
-  it("test is we get an refNumber", async function () {
+  it("test is we get an refNumber", async function() {
     this.timeout(20000);
     let mongo;
     try {
@@ -47,7 +46,7 @@ describe("getId", function () {
     expect(id).to.be.a("string");
     expect(id.length).to.be.greaterThan(3);
   });
-  it("test is we get 10000 refNumbers", async function () {
+  it("test is we get 10000 refNumbers", async function() {
     this.timeout(30000);
     let mongo;
     try {
