@@ -2,6 +2,7 @@
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
 const { MongoConnection } = require("../database/mongo");
+
 const mongod = new MongoMemoryServer();
 
 async function startMongo() {
@@ -20,16 +21,13 @@ async function readDirectory() {
   try {
     const files = await fs.readdir(path);
     return files;
-
-  }
-  catch (e) {
+  } catch (e) {
     console.warn("no schema/fixtures found!");
     return [];
   }
 }
 
 async function readFile(fileName) {
-
   const rawdata = await fs.readFile(path + fileName);
 
   return JSON.parse(rawdata);

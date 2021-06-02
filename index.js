@@ -9,7 +9,7 @@ const { ibmFunctionCall } = require("./functions/ibmFunctionCall");
 const { decodeBase64, checkAllParams } = require("./functions/utils");
 const logActivity = require("./functions/logActivity");
 const { addLogging } = require("./functions/logFunction");
-
+const { User } = require("./database/collections/user");
 const { uploadFileToAws, getFileFromAws } = require("./functions/storeFiles");
 
 exports.getCloudUrl = getCloudUrl;
@@ -26,9 +26,7 @@ exports.ibmFunctionCall = ibmFunctionCall;
 exports.decodeBase64 = decodeBase64;
 exports.checkAllParams = checkAllParams;
 exports.logActivity = logActivity;
-
+exports.User = User;
 exports.uploadFileToAws = uploadFileToAws;
 exports.getFileFromAws = getFileFromAws;
 exports.addLogging = addLogging;
-
-
