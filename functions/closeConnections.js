@@ -7,7 +7,7 @@ module.exports = async function closeConnections(mongoUri) {
 
   await Promise.all([
     mongo.close(mongoUri),
-    PostgresConnection.close(),
+    PostgresConnection().close(),
     RedisConnection.close()
   ]);
   console.log("all db connections closed!");

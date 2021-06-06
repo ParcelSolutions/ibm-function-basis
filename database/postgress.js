@@ -1,18 +1,21 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { Pool } = require("pg");
-const debug = require("debug")("mongo");
+const debug = require("debug")("pg");
 
-let pool = null;
+const pgConnection = {};
 
 module.exports = class Pg {
-  constructor() {
-    if (!process.env.POSTGRESS_URI) {
-      throw Error("missing POSTGRESS_URI env setting!");
+  constructor(uri = process.env.POSTGRESS_URI) {
+    debug("connect to uri %s connection %o", uri, pgConnection[uri]);
+    this.uri = uri;
+    if (!uri) {
+      throw Error("missing POSTGRESS URI!");
     }
-    if (pool === null) {
-      console.log("create new postgres connection!");
-      pool = new Pool({
-        connectionString: process.env.POSTGRESS_URI,
+    if (!pgConnection[uri]) {
+      debug("create new postgres connection!");
+      this.pool = new Pool({
+        connectionString: uri,
+        
         connectionTimeoutMillis: 2000,
         // idleTimeoutMillis: 10000,
         max: 3,
@@ -21,8 +24,10 @@ module.exports = class Pg {
           rejectUnauthorized: false
         }
       });
+      pgConnection[uri] = this.pool;
+    } else {
+      this.pool = pgConnection[uri];
     }
-    this.pool = pool;
   }
 
   async testPgConnection() {
@@ -54,14 +59,14 @@ module.exports = class Pg {
     }
   }
 
-  static async close() {
-    console.log("pg connections open:", (pool || {}).totalCount || 0);
-    if (pool) {
+  async close() {
+    console.log("pg connections open:", (this.pool || {}).totalCount || 0);
+    if (this.pool) {
       console.log("close postgres!");
-      await pool.end();
+      await this.pool.end();
     }
 
-    pool = null;
+    pgConnection[this.uri] = null;
     return true;
   }
 };
