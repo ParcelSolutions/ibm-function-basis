@@ -26,8 +26,10 @@ function gets3Settings() {
   return {
     apiVersion: "2006-03-01",
     region: process.env.AWS_DEFAULT_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    }
   };
 }
 // const writeFile = util.promisify(fs.writeFile);
