@@ -1,6 +1,6 @@
 {
   "name": "@parcelsolutions/ibm-function-basis",
-  "version": "2.0.69",
+  "version": "2.0.70",
   "description": "functions to reuse in all OpenWhisk functions",
   "main": "index.js",
   "directories": {
