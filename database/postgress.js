@@ -44,12 +44,12 @@ module.exports = class Pg {
     }
   }
 
-  async runQuery(query) {
+  async runQuery(query, replace) {
     let client;
     try {
       debug("run pq %o", query);
       client = await this.pool.connect();
-      const result = await client.query(query);
+      const result = await client.query(query, replace);
       return result.rows;
     } catch (error) {
       console.error("Error executing query", error.stack);
