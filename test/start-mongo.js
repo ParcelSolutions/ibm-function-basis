@@ -2,6 +2,7 @@
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
 const { MongoConnection } = require("../database/mongo");
+const ObjectId = require("mongodb").ObjectID;
 
 const mongod = new MongoMemoryServer();
 
@@ -46,6 +47,10 @@ function cleanObject(inObject) {
       if (value.$date) {
         // converts date:
         value = new Date(value.$date);
+      }
+      if (value.$oid) {
+        // converts mongo id obj:
+        value = ObjectId(value.$oid);
       } else {
         value = cleanObject(value);
       }
